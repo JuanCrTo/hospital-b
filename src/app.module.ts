@@ -9,9 +9,25 @@ import { AppointmentModule } from './appointment/appointment.module';
 import { MedicalRecordModule } from './medical-record/medical-record.module';
 import { MedicineModule } from './medicine/medicine.module';
 import { AuthModule } from './auth/auth.module';
+import { MongooseModule } from '@nestjs/mongoose';
+import { ConfigModule } from '@nestjs/config';
+import { MongooseConfigService } from './mongoose-config/mongoose-config.service';
 
 @Module({
-  imports: [DoctorModule, UserModule, NurseModule, PatientModule, AppointmentModule, MedicalRecordModule, MedicineModule, AuthModule],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    MongooseModule.forRootAsync({ useClass: MongooseConfigService }),
+    DoctorModule,
+    UserModule,
+    NurseModule,
+    PatientModule,
+    AppointmentModule,
+    MedicalRecordModule,
+    MedicineModule,
+    AuthModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
