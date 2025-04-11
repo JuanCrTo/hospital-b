@@ -5,6 +5,7 @@ import {
   IsString,
   IsStrongPassword,
 } from 'class-validator';
+import { USER_ROLES, UserRole } from '../enums/user-role.enum';
 
 export class CreateUserDto {
   @IsString({ message: 'Name must be a string' })
@@ -36,8 +37,9 @@ export class CreateUserDto {
   )
   password: string;
 
-  @IsEnum(['doctor', 'nurse', 'patient'], {
+  @IsEnum(USER_ROLES, {
     message: 'Role must be either doctor, nurse, or patient',
   })
-  role: 'doctor' | 'nurse' | 'patient';
+  @IsNotEmpty({ message: 'Role is required' })
+  role: UserRole;
 }
