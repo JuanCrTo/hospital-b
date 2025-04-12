@@ -8,9 +8,13 @@ import {
 import { USER_ROLES, UserRole } from '../enums/user-role.enum';
 
 export class CreateUserDto {
-  @IsString({ message: 'Name must be a string' })
-  @IsNotEmpty({ message: 'Name is required' })
+  @IsString({ message: 'Firstname must be a string' })
+  @IsNotEmpty({ message: 'Firstname is required' })
   name: string;
+
+  @IsString({ message: 'Lastname must be a string' })
+  @IsNotEmpty({ message: 'Lastname is required' })
+  lastname: string;
 
   @IsString({ message: 'Email must be a string' })
   @IsNotEmpty({ message: 'Email is required' })
