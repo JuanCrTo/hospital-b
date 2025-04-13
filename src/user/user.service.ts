@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './model/user.schema';
+import { hashPassword } from 'src/utils/utils';
 
 @Injectable()
 export class UserService {
@@ -46,6 +47,11 @@ export class UserService {
   }
 
   // updatePassword
+  async updatePassword(id: string, password: string): Promise<User> {
+    const hashedPassword = await hashPassword(password);
+    return this.userModel.findByIdAndUpdate(id, { password: hashedPassword });
+  }
+
   // forgotPassword
 
   // changeUserRole
