@@ -16,17 +16,34 @@ export class UserService {
     return this.userModel.create(createUserDto);
   }
 
-  // findOne
+  // findOneById
   async findById(id: string): Promise<User> {
     return this.userModel.findById(id).lean();
   }
 
-  // findById
   // findByEmail
+  async findByEmail(email: string): Promise<User> {
+    return this.userModel.findOne({ email }).lean();
+  }
+
   // findAll
+  async findAll(createUserDto: CreateUserDto): Promise<User[]> {
+    return this.userModel.find(createUserDto).select('-password').lean();
+  }
 
   // update
+  async update(id: string, user: UpdateUserDto): Promise<void> {
+    const updatedUser = await this.userModel.findByIdAndUpdate(id, user, {
+      new: true,
+      runValidators: true,
+      lean: true,
+    });
+  }
+
   // delete
+  async delete(id: string): Promise<User> {
+    return this.userModel.findByIdAndDelete(id).lean();
+  }
 
   // updatePassword
   // forgotPassword
