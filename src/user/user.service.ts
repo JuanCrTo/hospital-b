@@ -14,42 +14,47 @@ export class UserService {
 
   // create
   async create(createUserDto: CreateUserDto): Promise<User> {
+    const hashedPassword = await hashPassword(createUserDto.password);
+    createUserDto.password = hashedPassword;
     return this.userModel.create(createUserDto);
   }
 
   // findOneById
   async findById(id: string): Promise<User> {
-    return this.userModel.findById(id).lean();
+    return this.userModel.findById(id).select('-_id -password').lean();
   }
 
   // findByEmail
   async findByEmail(email: string): Promise<User> {
-    return this.userModel.findOne({ email }).lean();
+    return this.userModel.findOne({ email }).select('-_id -password').lean();
   }
 
   // findAll
-  async findAll(createUserDto: CreateUserDto): Promise<User[]> {
-    return this.userModel.find(createUserDto).select('-password').lean();
+  async findAll(): Promise<User[]> {
+    return this.userModel.find().select('-password').lean();
   }
 
   // update
-  async update(id: string, user: UpdateUserDto): Promise<void> {
-    const updatedUser = await this.userModel.findByIdAndUpdate(id, user, {
-      new: true,
-      runValidators: true,
-      lean: true,
-    });
+  async update(id: string, user: UpdateUserDto): Promise<User> {
+    return this.userModel
+      .findByIdAndUpdate(id, user, {
+        new: true,
+        runValidators: true,
+        lean: true,
+      })
+      .select('-_id -password')
+      .lean();
   }
 
   // delete
   async delete(id: string): Promise<User> {
-    return this.userModel.findByIdAndDelete(id).lean();
+    return this.userModel.findByIdAndDelete(id).select('-_id -password').lean();
   }
 
   // updatePassword
   async updatePassword(id: string, password: string): Promise<User> {
     const hashedPassword = await hashPassword(password);
-    return this.userModel.findByIdAndUpdate(id, { password: hashedPassword });
+    return this.userModel.findByIdAndUpdate(id, { password: hashedPassword }).select('-_id -password').lean();
   }
 
   // forgotPassword

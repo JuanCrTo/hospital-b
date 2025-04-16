@@ -1,7 +1,66 @@
-import { Controller } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { UserService } from './user.service';
+import { CreateUserDto } from './dto/create-user.dto';
+import { User } from './model/user.schema';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
+
+  // Create a new user
+  @Post('create')
+  async createUser(
+    @Body() createUserDto: CreateUserDto,
+    password: string,
+  ): Promise<User> {
+    return this.userService.create(createUserDto);
+  }
+
+  // Find one user by ID
+  @Get(':id')
+  async findUserById(@Param('id') id: string): Promise<User> {
+    return this.userService.findById(id);
+  }
+
+  // Find one user by email
+  @Get('email/:email')
+  async findOneUserById(@Param('email') email: string): Promise<User> {
+    return this.userService.findByEmail(email);
+  }
+
+  // Find all users
+  @Get()
+  async findAll(): Promise<User[]> {
+    return this.userService.findAll();
+  }
+
+  // Update a user by ID
+  @Put(':id')
+  async findUserByIdAndupoodtae(
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ): Promise<User> {
+    return this.userService.update(id, updateUserDto);
+  }
+
+  // Delete a user by ID
+  @Delete(':id')
+  async deleteById(@Param('id') id: string): Promise<User> {
+    return this.userService.delete(id);
+  }
+
+  // Update a user's password by ID
+  @Put(':id/password')
+  async updatePassword(@Param('id') id: string, @Body('password') password: string) {
+    return this.userService.updatePassword(id, password);
+  }
 }
