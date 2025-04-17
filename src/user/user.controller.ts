@@ -11,12 +11,14 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './model/user.schema';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Public } from 'src/decorators/public.decorator';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   // Create a new user
+  @Public()
   @Post('create')
   async createUser(
     @Body() createUserDto: CreateUserDto,
@@ -59,6 +61,7 @@ export class UserController {
   }
 
   // Update a user's password by ID
+  @Public()
   @Put(':id/password')
   async updatePassword(@Param('id') id: string, @Body('password') password: string) {
     return this.userService.updatePassword(id, password);
