@@ -27,12 +27,12 @@ export class UserService {
 
   // findByEmail
   async findByEmail(email: string): Promise<IUser> {
-    return this.userModel.findOne({ email }).select('-_id -password');
+    return this.userModel.findOne({ email });
   }
 
   // findAll
   async findAll(): Promise<User[]> {
-    return this.userModel.find().select('-password').lean();
+    return this.userModel.find().select('-_id -password').lean();
   }
 
   // update

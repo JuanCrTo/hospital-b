@@ -11,7 +11,7 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './model/user.schema';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Public } from 'src/decorators/public.decorator';
+import { Public } from '../decorators/public.decorator';
 
 @Controller('user')
 export class UserController {
@@ -21,8 +21,7 @@ export class UserController {
   @Public()
   @Post('create')
   async createUser(
-    @Body() createUserDto: CreateUserDto,
-    password: string,
+    @Body() createUserDto: CreateUserDto
   ): Promise<User> {
     return this.userService.create(createUserDto);
   }
@@ -47,7 +46,7 @@ export class UserController {
 
   // Update a user by ID
   @Put(':id')
-  async findUserByIdAndupoodtae(
+  async findUserByIdAndUpdate(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<User> {
