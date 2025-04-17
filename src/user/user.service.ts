@@ -5,6 +5,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './model/user.schema';
 import { hashPassword } from 'src/utils/utils';
+import { IUser } from './interfaces/user.interface';
 
 @Injectable()
 export class UserService {
@@ -25,8 +26,8 @@ export class UserService {
   }
 
   // findByEmail
-  async findByEmail(email: string): Promise<User> {
-    return this.userModel.findOne({ email }).select('-_id -password').lean();
+  async findByEmail(email: string): Promise<IUser> {
+    return this.userModel.findOne({ email }).select('-_id -password');
   }
 
   // findAll
