@@ -25,6 +25,12 @@ export class Patient {
 
   @Prop({ required: true })
   birth: string;
+
+  @Prop({ required: true })
+  age: number;
+
+  @Prop({ required: true })
+  clinicalage: string;
 }
 
 export const PatientSchema = SchemaFactory.createForClass(Patient);

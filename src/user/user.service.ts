@@ -1,4 +1,4 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -6,18 +6,69 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './model/user.schema';
 import { hashPassword } from 'src/utils/utils';
 import { IUser } from './interfaces/user.interface';
+import { PatientService } from 'src/patient/patient.service';
+import { USER_ROLES } from './enums/user-role.enum';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<User>,
+    private readonly patientService: PatientService,
   ) {}
 
   // create
   async create(createUserDto: CreateUserDto): Promise<User> {
     const hashedPassword = await hashPassword(createUserDto.password);
+
     createUserDto.password = hashedPassword;
-    return this.userModel.create(createUserDto);
+
+    const user = await this.userModel.create(createUserDto);
+
+    if (createUserDto.role === 'patient' && createUserDto.patientDetails) {
+      const createPatientDto = {
+        userId: user._id,
+        identification: createUserDto.patientDetails.identification,
+        firstname: createUserDto.patientDetails.firstname,
+        middlename: createUserDto.patientDetails.middlename,
+        lastname: createUserDto.patientDetails.lastname,
+        secondlastname: createUserDto.patientDetails.secondlastname,
+        birth: createUserDto.patientDetails.birth,
+      };
+
+      await this.patientService.create(createPatientDto);
+    }
+
+    // *Doctor
+    // if (createUserDto.role === 'patient' && createUserDto.patientDetails) {
+    //   const createPatientDto = {
+    //     userId: user._id,
+    //     identification: createUserDto.patientDetails.identification,
+    //     firstname: createUserDto.patientDetails.firstname,
+    //     middlename: createUserDto.patientDetails.middlename,
+    //     lastname: createUserDto.patientDetails.lastname,
+    //     secondlastname: createUserDto.patientDetails.secondlastname,
+    //     birth: createUserDto.patientDetails.birth,
+    //   };
+
+    //   await this.patientService.create(createPatientDto);
+    // }
+
+    // *Nurse
+    // if (createUserDto.role === 'patient' && createUserDto.patientDetails) {
+    //   const createPatientDto = {
+    //     userId: user._id,
+    //     identification: createUserDto.patientDetails.identification,
+    //     firstname: createUserDto.patientDetails.firstname,
+    //     middlename: createUserDto.patientDetails.middlename,
+    //     lastname: createUserDto.patientDetails.lastname,
+    //     secondlastname: createUserDto.patientDetails.secondlastname,
+    //     birth: createUserDto.patientDetails.birth,
+    //   };
+
+    //   await this.patientService.create(createPatientDto);
+    // }
+
+    return user;
   }
 
   // findOneById
@@ -49,13 +100,36 @@ export class UserService {
 
   // delete
   async delete(id: string): Promise<User> {
-    return this.userModel.findByIdAndDelete(id).select('-_id -password').lean();
+    const user = await this.userModel.findByIdAndDelete(id);
+
+    // export const USER_ROLES = ['doctor', 'nurse', 'patient'] as const;
+    switch (user.role) {
+      // case USER_ROLES[0]: // *doctor
+      //   await this.doctorService.deleteByUserId(user._id);
+      //   break;
+      // case USER_ROLES[1]: // *nurse
+      //   await this.nurseService.deleteByUserId(user._id);
+      //   break;
+      case USER_ROLES[2]: // patient
+        await this.patientService.delete(user._id.toString());
+        break;
+    }
+
+    const deletedUser = await this.userModel
+      .findByIdAndDelete(id)
+      .select('-_id -password')
+      .lean();
+
+    return deletedUser;
   }
 
   // updatePassword
   async updatePassword(id: string, password: string): Promise<User> {
     const hashedPassword = await hashPassword(password);
-    return this.userModel.findByIdAndUpdate(id, { password: hashedPassword }).select('-_id -password').lean();
+    return this.userModel
+      .findByIdAndUpdate(id, { password: hashedPassword })
+      .select('-_id -password')
+      .lean();
   }
 
   // forgotPassword

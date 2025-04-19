@@ -4,15 +4,14 @@ import {
   IsMongoId,
   IsNotEmpty,
   IsString,
-  Max,
-  Min,
 } from 'class-validator';
+import { Types } from 'mongoose';
 // import { IsPastDate } from 'src/decorators/IsPastDate.decorator';
 
 export class CreatePatientDto {
   @IsNotEmpty({ message: 'ID is required' })
   @IsMongoId({ message: 'ID must be a valid MongoDB ObjectId' })
-  userId: string;
+  userId: Types.ObjectId;
 
   @IsNotEmpty({ message: 'Identification  is required' })
   @IsString({ message: 'Identification  must be a string' })

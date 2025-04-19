@@ -2,20 +2,16 @@ import {
   IsEmail,
   IsEnum,
   IsNotEmpty,
+  IsOptional,
   IsString,
   IsStrongPassword,
+  ValidateNested,
 } from 'class-validator';
 import { USER_ROLES, UserRole } from '../enums/user-role.enum';
+import { CreatePatientDto } from 'src/patient/dto/create-patient.dto';
+import { Type } from 'class-transformer';
 
 export class CreateUserDto {
-  @IsString({ message: 'Firstname must be a string' })
-  @IsNotEmpty({ message: 'Firstname is required' })
-  name: string;
-
-  @IsString({ message: 'Lastname must be a string' })
-  @IsNotEmpty({ message: 'Lastname is required' })
-  lastname: string;
-
   @IsString({ message: 'Email must be a string' })
   @IsNotEmpty({ message: 'Email is required' })
   @IsEmail(
@@ -46,4 +42,19 @@ export class CreateUserDto {
   })
   @IsNotEmpty({ message: 'Role is required' })
   role: UserRole;
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => CreatePatientDto)
+  patientDetails?: CreatePatientDto;
+
+  // @IsOptional()
+  // @ValidateNested()
+  // @Type(() => CreateDoctorDto)
+  // doctorDetails?: CreateDoctorDto;
+
+  // @IsOptional()
+  // @ValidateNested()
+  // @Type(() => CreateNurseDto)
+  // nurseDetails?: CreateNurseDto;
 }
