@@ -7,6 +7,16 @@ export interface IPatient {
   lastname: string;
   secondlastname: string;
   birth: string;
+  location?: string;
+  latitude?: string;
+  longitude?: string;
+
+  locationHistory?: {
+    location: string;
+    latitude: string;
+    longitude: string;
+    updatedAt: Date;
+  }[];
   createdAt: Date;
   updatedAt: Date;
 }

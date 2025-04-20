@@ -1,8 +1,10 @@
+import { Prop } from '@nestjs/mongoose';
 import {
   IsDateString,
   IsInt,
   IsMongoId,
   IsNotEmpty,
+  IsOptional,
   IsString,
 } from 'class-validator';
 import { Types } from 'mongoose';
@@ -40,5 +42,7 @@ export class CreatePatientDto {
   })
   birth: string;
 
-
+  @IsOptional()
+  @IsString({ message: 'Location must be a string'})
+  location: string;
 }
