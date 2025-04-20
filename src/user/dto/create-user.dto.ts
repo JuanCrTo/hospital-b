@@ -44,8 +44,6 @@ export class CreateUserDto {
   role: UserRole;
 
   @IsOptional()
-  @ValidateNested()
-  @Type(() => CreatePatientDto)
   patientDetails?: CreatePatientDto;
 
   // @IsOptional()
