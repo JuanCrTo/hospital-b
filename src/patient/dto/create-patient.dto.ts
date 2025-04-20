@@ -1,20 +1,11 @@
-import { Prop } from '@nestjs/mongoose';
 import {
   IsDateString,
-  IsInt,
-  IsMongoId,
   IsNotEmpty,
-  IsOptional,
   IsString,
 } from 'class-validator';
-import { Types } from 'mongoose';
 import { IsPastDate } from 'src/decorators/IsPastDate.decorator';
 
 export class CreatePatientDto {
-  @IsNotEmpty({ message: 'ID is required' })
-  @IsMongoId({ message: 'ID must be a valid MongoDB ObjectId' })
-  userId: Types.ObjectId;
-
   @IsNotEmpty({ message: 'Identification  is required' })
   @IsString({ message: 'Identification  must be a string' })
   identification: string;
@@ -42,7 +33,7 @@ export class CreatePatientDto {
   })
   birth: string;
 
-  @IsOptional()
-  @IsString({ message: 'Location must be a string'})
-  location: string;
+  // @IsOptional()
+  // @IsString({ message: 'Location must be a string'})
+  // location: string;
 }

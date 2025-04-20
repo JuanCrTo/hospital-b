@@ -8,6 +8,7 @@ import { hashPassword } from 'src/utils/utils';
 import { IUser } from './interfaces/user.interface';
 import { PatientService } from 'src/patient/patient.service';
 import { USER_ROLES } from './enums/user-role.enum';
+import { CreatePatientDto } from 'src/patient/dto/create-patient.dto';
 
 @Injectable()
 export class UserService {
@@ -25,46 +26,31 @@ export class UserService {
     const user = await this.userModel.create(createUserDto);
 
     if (createUserDto.role === 'patient' && createUserDto.patientDetails) {
-      const createPatientDto = {
-        userId: user._id,
-        identification: createUserDto.patientDetails.identification,
-        firstname: createUserDto.patientDetails.firstname,
-        middlename: createUserDto.patientDetails.middlename,
-        lastname: createUserDto.patientDetails.lastname,
-        secondlastname: createUserDto.patientDetails.secondlastname,
-        birth: createUserDto.patientDetails.birth,
+      const createPatientDto: CreatePatientDto & { userId: string } = {
+        ...createUserDto.patientDetails,
+        userId: user._id.toString(),
       };
-
+      
       await this.patientService.create(createPatientDto);
     }
 
     // *Doctor
     // if (createUserDto.role === 'patient' && createUserDto.patientDetails) {
-    //   const createPatientDto = {
-    //     userId: user._id,
-    //     identification: createUserDto.patientDetails.identification,
-    //     firstname: createUserDto.patientDetails.firstname,
-    //     middlename: createUserDto.patientDetails.middlename,
-    //     lastname: createUserDto.patientDetails.lastname,
-    //     secondlastname: createUserDto.patientDetails.secondlastname,
-    //     birth: createUserDto.patientDetails.birth,
+    //   const createPatientDto: CreatePatientDto & { userId: string } = {
+    //     ...createUserDto.patientDetails,
+    //     userId: user._id.toString(),
     //   };
-
+      
     //   await this.patientService.create(createPatientDto);
     // }
 
     // *Nurse
     // if (createUserDto.role === 'patient' && createUserDto.patientDetails) {
-    //   const createPatientDto = {
-    //     userId: user._id,
-    //     identification: createUserDto.patientDetails.identification,
-    //     firstname: createUserDto.patientDetails.firstname,
-    //     middlename: createUserDto.patientDetails.middlename,
-    //     lastname: createUserDto.patientDetails.lastname,
-    //     secondlastname: createUserDto.patientDetails.secondlastname,
-    //     birth: createUserDto.patientDetails.birth,
+    //   const createPatientDto: CreatePatientDto & { userId: string } = {
+    //     ...createUserDto.patientDetails,
+    //     userId: user._id.toString(),
     //   };
-
+      
     //   await this.patientService.create(createPatientDto);
     // }
 

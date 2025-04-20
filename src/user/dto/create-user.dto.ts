@@ -43,7 +43,9 @@ export class CreateUserDto {
   @IsNotEmpty({ message: 'Role is required' })
   role: UserRole;
 
-  @IsOptional()
+  @IsNotEmpty({ message: 'Patient Details is required' })
+  @ValidateNested()
+  @Type(() => CreatePatientDto)
   patientDetails?: CreatePatientDto;
 
   // @IsOptional()
