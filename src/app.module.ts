@@ -12,6 +12,7 @@ import { AuthModule } from './auth/auth.module'
 import { MongooseModule } from '@nestjs/mongoose'
 import { ConfigModule } from '@nestjs/config'
 import { MongooseConfigService } from './mongoose-config/mongoose-config.service'
+import { EmailModule } from './email/email.module'
 
 @Module({
   imports: [
@@ -26,7 +27,8 @@ import { MongooseConfigService } from './mongoose-config/mongoose-config.service
     AppointmentModule,
     MedicalRecordModule,
     MedicineModule,
-    AuthModule
+    AuthModule,
+    EmailModule
   ],
   controllers: [AppController],
   providers: [AppService]
