@@ -14,9 +14,9 @@ export class EmailController {
 
   @Public()
   @Get('welcome')
-  async sendEmail(@Query('to') to: string, @Query('nombre') nombre: string) {
+  async sendEmailWelcome(@Query('userId') userId: string) {
     try {
-      const result = await this.emailService.sendEmail(to, nombre)
+      const result = await this.emailService.sendEmailWelcome(userId)
       return { message: 'Correo enviado con éxito', result }
     } catch (error) {
       return { message: 'Error al enviar el correo', error: error.message }
