@@ -6,12 +6,6 @@ import { Public } from 'src/decorators/public.decorator'
 export class EmailController {
   constructor(private readonly emailService: EmailService) {}
 
-  @Get('forgotpassword')
-  async forgotpassword(@Query('to') to: string, @Query('nombre') nombre: string) {
-    const resetLink = `https://localhost:3000/set-password?token=fake-token`
-    return await this.emailService.forgotpassword(to, nombre, resetLink)
-  }
-
   @Public()
   @Get('welcome')
   async sendEmailWelcome(@Query('userId') userId: string) {

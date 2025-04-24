@@ -17,7 +17,7 @@ export class EmailService {
     @InjectModel(Patient.name) private readonly patientModel: Model<Patient>
   ) {}
 
-  async forgotpassword(userId: string, resetLink: string) {
+  async sendEmailForgotPassword(userId: string, resetLink: string) {
     const user = await this.userModel.findById(userId).lean()
 
     const email = user.email
