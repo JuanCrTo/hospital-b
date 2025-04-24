@@ -11,5 +11,5 @@ export class JwtSetPasswordConfigService implements JwtOptionsFactory {
       secret: this.configService.get<string>('SECRET_KEY_RESET_PASSWORD'),
       signOptions: { expiresIn: '10m' }
     }
-  }
+  }  
 }

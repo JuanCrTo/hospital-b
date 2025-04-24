@@ -3,12 +3,15 @@ import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/user.service';
 import { comparePassword } from 'src/utils/utils';
 import { IJwtPayload } from './interfaces/jwt-payload.interface';
+import { IUser } from 'src/user/interfaces/user.interface';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UserService,
     private readonly jwtService: JwtService,
+    private readonly configService: ConfigService
   ) {}
 
   async signIn(email: string, password: string): Promise<string> {
@@ -20,5 +23,11 @@ export class AuthService {
     
     const payload: IJwtPayload = { userId: user._id.toString() };
     return await this.jwtService.signAsync(payload);
+  }
+
+  // generateResetTokenJWT
+  async generateResetTokenJWT(user: IUser): Promise<string> {
+    const payload: IJwtPayload = { userId: user._id };
+    return  this.jwtService.signAsync(payload);
   }
 }

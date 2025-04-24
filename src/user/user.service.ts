@@ -72,18 +72,6 @@ export class UserService {
     return this.userModel.find().select('-_id -password').lean();
   }
 
-  // update
-  async update(id: string, user: UpdateUserDto): Promise<User> {
-    return this.userModel
-      .findByIdAndUpdate(id, user, {
-        new: true,
-        runValidators: true,
-        lean: true,
-      })
-      .select('-_id -password')
-      .lean();
-  }
-
   // delete
   async delete(id: string): Promise<User> {
     const user = await this.userModel.findByIdAndDelete(id);
@@ -117,8 +105,6 @@ export class UserService {
       .select('-_id -password')
       .lean();
   }
-
-  // forgotPassword
 
   // changeUserRole
   // countUsersByRole

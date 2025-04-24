@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { HttpService } from '@nestjs/axios'
 import { ConfigService } from '@nestjs/config'
 import * as FormData from 'form-data'
-import { lastValueFrom } from 'rxjs'
+import { first, lastValueFrom } from 'rxjs'
 import { User } from 'src/user/model/user.schema'
 import { Patient } from 'src/patient/model/patient.schema'
 import { InjectModel } from '@nestjs/mongoose'
@@ -17,18 +17,20 @@ export class EmailService {
     @InjectModel(Patient.name) private readonly patientModel: Model<Patient>
   ) {}
 
-  async forgotpassword(email: string, nombre: string, resetLink: string) {
-    const formData = new FormData()
-    formData.append('from', 'HospitalApp <no-reply@tu-dominio.com>')
-    formData.append('to', email)
-    formData.append('subject', 'Restablecer contraseña')
-    formData.append('template', 'forgotpassword')
+  async forgotpassword(userId: string, resetLink: string) {
+    const user = await this.userModel.findById(userId).lean()
+
+    const email = user.email
 
     const variables = {
-      nombre,
       resetLink
     }
 
+    const formData = new FormData()
+    formData.append('from', 'HospitalApp <no-reply@tu-dominio.com>')
+    formData.append('to', email)
+    formData.append('subject', 'Password Reset')
+    formData.append('template', 'forgotpassword')
     formData.append('h:X-Mailgun-Variables', JSON.stringify(variables))
 
     const url = `${this.configService.get<string>('MAILGUN_URL_AND_DOMAIN')}`
@@ -55,27 +57,27 @@ export class EmailService {
       throw new Error('User not found')
     }
 
-    const email = user. email
+    const email = user.email
     const tipo = user.role
 
-    let name : string
+    let name: string
 
     switch (tipo) {
       // case 'doctor':
       //   const doctor = await this.doctorModel.findOne({ userId }).lean()
       //   name = doctor?.firstname || 'Doctor'
       //   break
-  
+
       case 'patient':
         const patient = await this.patientModel.findOne({ userId }).lean()
         name = patient?.firstname || 'Paciente'
         break
-  
+
       // case 'nurse':
       //   const nurse = await this.nurseModel.findOne({ userId }).lean()
       //   name = nurse?.firstname || 'Enfermero/a'
       //   break
-  
+
       default:
         name = 'Usuario'
     }
@@ -87,7 +89,7 @@ export class EmailService {
     const formData = new FormData()
     formData.append('from', 'HospitalYellow <hospitalyellow@gmail.com>')
     formData.append('to', email)
-    formData.append('subject', 'Test Subject')
+    formData.append('subject', 'Welcome to Hospital Yellow')
     formData.append('template', 'welcome')
     formData.append('h:X-Mailgun-Variables', JSON.stringify(variables))
 

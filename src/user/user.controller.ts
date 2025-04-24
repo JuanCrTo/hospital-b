@@ -34,12 +34,6 @@ export class UserController {
     return this.userService.findAll()
   }
 
-  // Update a user by ID
-  @Put(':id')
-  async findUserByIdAndUpdate(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto): Promise<User> {
-    return this.userService.update(id, updateUserDto)
-  }
-
   // Delete a user by ID
   @Delete(':id')
   async deleteById(@Param('id') id: string): Promise<User> {
