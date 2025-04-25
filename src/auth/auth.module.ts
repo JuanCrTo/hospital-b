@@ -6,10 +6,12 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtSignInConfigService } from './jwt-sign-in-config/jwt-sign-in-config.service';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth.guard';
+import { EmailModule } from 'src/email/email.module';
 
 @Module({
   imports: [
     UserModule,
+    EmailModule,
     JwtModule.registerAsync({
       global: false,
       useClass: JwtSignInConfigService,

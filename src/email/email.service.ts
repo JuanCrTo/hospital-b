@@ -27,10 +27,10 @@ export class EmailService {
     }
 
     const formData = new FormData()
-    formData.append('from', 'HospitalApp <no-reply@tu-dominio.com>')
+    formData.append('from', 'HospitalYellow <hospitalyellow@gmail.com>')
     formData.append('to', email)
     formData.append('subject', 'Password Reset')
-    formData.append('template', 'forgotpassword')
+    formData.append('template', 'forgot-password')
     formData.append('h:X-Mailgun-Variables', JSON.stringify(variables))
 
     const url = `${this.configService.get<string>('MAILGUN_URL_AND_DOMAIN')}`
