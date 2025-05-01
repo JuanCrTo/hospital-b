@@ -32,30 +32,31 @@ export class Patient {
   @Prop({ required: true })
   clinicalage: string;
 
-  @Prop({ required: false })
+  @Prop({ required: true })
   location?: string;
 
-  @Prop({ required: false })
-  latitude?: string;
+  @Prop({ required: true })
+  latitude?: number;
 
-  @Prop({ required: false })
-  longitude?: string;
+  @Prop({ required: true })
+  longitude?: number;
 
   @Prop({
     type: [
       {
-        location: String,
-        latitude: String,
-        longitude: String,
-        updatedAt: Date,
+        location: {type: String, required: true},
+        latitude: {type: Number, required: true},
+        longitude: {type: Number, required: true},
+        updatedAt: {type: Date, default: Date.now},
       },
     ],
     default: [],
+    required: false,
   })
   locationHistory?: {
     location: string;
-    latitude: string;
-    longitude: string;
+    latitude: number;
+    longitude: number;
     updatedAt: Date;
   }[];
 }

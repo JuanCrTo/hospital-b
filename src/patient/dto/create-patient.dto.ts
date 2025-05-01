@@ -33,7 +33,16 @@ export class CreatePatientDto {
   })
   birth: string;
 
-  // @IsOptional()
-  // @IsString({ message: 'Location must be a string'})
-  // location: string;
+  // [0]/formatted_address
+  // formatted_address/types: street_address
+  location?: string;
+
+  //[0]/formatted_address/geometry/location/lat
+  latitude?: number;
+
+  //[0]/formatted_address/geometry/location/lng
+  longitude?: number;
+
+  // List of [0]/formatted_address
+  locationHistory?: string[];
 }
