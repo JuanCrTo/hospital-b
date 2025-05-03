@@ -2,6 +2,7 @@ import { Body, Controller, Get, Param, Put } from '@nestjs/common';
 import { PatientService } from './patient.service';
 import { Patient } from './model/patient.schema';
 import { UpdatePatientDto } from './dto/update-user.dto';
+import { Public } from 'src/decorators/public.decorator';
 
 @Controller('patient')
 export class PatientController {
@@ -30,6 +31,7 @@ export class PatientController {
  */
 
   // find all patients
+  @Public()
   @Get()
   async findAll():Promise<Patient[]>{
     return this.patientService.findAll();
