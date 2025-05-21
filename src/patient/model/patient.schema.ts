@@ -44,9 +44,9 @@ export class Patient {
   @Prop({
     type: [
       {
-        location: {type: String, required: true},
-        latitude: {type: Number, required: true},
-        longitude: {type: Number, required: true},
+        location: {type: String, required: false},
+        latitude: {type: Number, required: false},
+        longitude: {type: Number, required: false},
         updatedAt: {type: Date, default: Date.now},
       },
     ],

@@ -13,7 +13,7 @@ import { MongooseModule } from '@nestjs/mongoose'
 import { ConfigModule } from '@nestjs/config'
 import { MongooseConfigService } from './mongoose-config/mongoose-config.service'
 import { EmailModule } from './email/email.module'
-import { PdfModule } from './pdf/pdf.module';
+import { PdfModule } from './pdf/pdf.module'
 
 @Module({
   imports: [

@@ -1,4 +1,5 @@
 import * as bcrypt from 'bcrypt';
+import axios from 'axios';
 
 export const hashPassword = async (password: string): Promise<string> => {
   const salt = await bcrypt.genSalt(10);
@@ -47,4 +48,55 @@ export function calculateClinicalAge(birth: string): string {
   }
 
   return `${years} años, ${months} meses, ${days} días`;
+}
+
+export const getCoordinatesFromLocation = async (location: string): Promise<{ latitude: number, longitude: number }> => {
+  const apiKey = process.env.GOOGLE_MAPS_API_KEY;
+  if (!apiKey) {
+    throw new Error('Google Maps API Key not defined in environment variables');
+  }
+
+  const encodedLocation = encodeURIComponent(location);
+  const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodedLocation}&key=${apiKey}`;
+
+  const response = await axios.get(url);
+  const results = response.data.results;
+
+  if (!results || results.length === 0) {
+    throw new Error('No results found for the given location');
+  }
+
+  const { lat, lng } = results[0].geometry.location;
+  return { latitude: lat, longitude: lng };
+};
+
+export function addLocationToHistory(
+  currentHistory: {
+    location: string;
+    latitude: number;
+    longitude: number;
+    updatedAt: Date;
+  }[],
+  newEntry: {
+    location: string;
+    latitude: number;
+    longitude: number;
+  }
+): typeof currentHistory {
+  const lastEntry = currentHistory?.[currentHistory.length - 1];
+
+  // Evita duplicar la última ubicación
+  if (
+    lastEntry &&
+    lastEntry.location === newEntry.location &&
+    lastEntry.latitude === newEntry.latitude &&
+    lastEntry.longitude === newEntry.longitude
+  ) {
+    return currentHistory;
+  }
+
+  return [
+    ...(currentHistory || []),
+    { ...newEntry, updatedAt: new Date() },
+  ];
 }
