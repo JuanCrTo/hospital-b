@@ -12,20 +12,25 @@ export class PatientService {
 
   // create
   async create(createPatientDto: CreatePatientDto): Promise<Patient> {
+    const { location } = createPatientDto
+    let latitude: number | undefined
+    let longitude: number | undefined
+
+    if (location) {
+      const coords = await getCoordinatesFromLocation(location)
+      latitude = coords.latitude
+      longitude = coords.longitude
+    }
+
     const age = calculateAge(createPatientDto.birth)
     const clinicalage = calculateClinicalAge(createPatientDto.birth)
 
     const patientWithCalculatedData = {
       ...createPatientDto,
       age,
-      clinicalage
-    }
-
-    const { location } = createPatientDto
-    if (location) {
-      const { latitude, longitude } = await getCoordinatesFromLocation(location)
-      patientWithCalculatedData.latitude = latitude
-      patientWithCalculatedData.longitude = longitude
+      clinicalage,
+      latitude,
+      longitude
     }
 
     return this.patientModel.create(patientWithCalculatedData)
