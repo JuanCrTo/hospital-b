@@ -2,7 +2,7 @@ import { Body, Controller, Post } from '@nestjs/common'
 import { Public } from 'src/decorators/public.decorator'
 import { AuthService } from './auth.service'
 import { SignInDto } from './dto/sign-in.dto'
-import { ApiBearerAuth } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger'
 
 @Controller('auth')
 export class AuthController {
@@ -12,6 +12,7 @@ export class AuthController {
 
   @Public()
   @Post('signIn')
+  @ApiOperation({ summary: 'Sign in a user' })
   async signIn(@Body() { email, password }: SignInDto): Promise<{ access_token: string }> {
     const access_token = await this.authService.signIn(email, password)
     return { access_token }
@@ -19,6 +20,7 @@ export class AuthController {
 
   @ApiBearerAuth('JWT-auth')
   @Post('forgotpassword')
+  @ApiOperation({ summary: 'Request a password reset' })
   async forgotPassword(@Body('email') email: string) {
     return this.authService.handleForgotPassword(email)
   }

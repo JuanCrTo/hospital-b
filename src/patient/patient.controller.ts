@@ -3,7 +3,7 @@ import { PatientService } from './patient.service';
 import { Patient } from './model/patient.schema';
 import { UpdatePatientDto } from './dto/update-user.dto';
 import { Public } from 'src/decorators/public.decorator';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 
 @Controller('patient')
 export class PatientController {
@@ -19,6 +19,7 @@ export class PatientController {
 
   @ApiBearerAuth('JWT-auth')
   @Put(':id')
+  @ApiOperation({ summary: 'Update a patient by ID' })
   async update(@Param('id') id: string, @Body() updatePatientDto: UpdatePatientDto): Promise<Patient> {
     return this.patientService.update(id, updatePatientDto);
   }
@@ -33,36 +34,42 @@ export class PatientController {
 
   @Public()
   @Get()
+  @ApiOperation({ summary: 'Get all patients' })
   async findAll():Promise<Patient[]>{
     return this.patientService.findAll();
   }
 
   @ApiBearerAuth('JWT-auth')
   @Get(':id')
+  @ApiOperation({ summary: 'Get patient by ID' })
   async findById(@Param('id') id: string): Promise<Patient> {
     return this.patientService.findById(id);
   }
 
   @ApiBearerAuth('JWT-auth')
   @Get('identification/:identification')
+  @ApiOperation({ summary: 'Get patient by identification' })
   async findByIdentification(@Param('identification') identification: string): Promise<Patient> {
     return this.patientService.findByIdentification(identification);
   }
 
   @ApiBearerAuth('JWT-auth')
   @Get('age/:age')
+  @ApiOperation({ summary: 'Get patients by age' })
   async findByAge(@Param('age') age: number): Promise<Patient[]> {
     return this.patientService.findByAge(age);
   }
 
   @ApiBearerAuth('JWT-auth')
   @Get('firstname/:firstname')
+  @ApiOperation({ summary: 'Get patients by firstname' })
   async findByFirstname(@Param('firstname') firstname: string): Promise<Patient[]> {
     return this.patientService.findByFirstname(firstname);
   }
 
   @ApiBearerAuth('JWT-auth')
   @Get('lastname/:lastname')
+  @ApiOperation({ summary: 'Get patients by lastname' })
   async findByLastname(@Param('lastname') lastname: string): Promise<Patient[]> {
     return this.patientService.findByLastname(lastname);
   }
