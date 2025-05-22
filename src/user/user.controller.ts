@@ -41,7 +41,6 @@ export class UserController {
   }
 
   // Update a user's password by ID
-  @Public()
   @Put(':id/password')
   async updatePassword(@Param('id') id: string, @Body('password') password: string) {
     return this.userService.updatePassword(id, password)
