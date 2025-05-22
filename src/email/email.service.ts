@@ -5,6 +5,8 @@ import * as FormData from 'form-data'
 import { first, lastValueFrom } from 'rxjs'
 import { PatientService } from 'src/patient/patient.service'
 import { UserService } from 'src/user/user.service'
+import { RabbitMQService } from 'src/rabbitmq/rabbitmq.service'
+import { ForgotPasswordEmailData, WelcomeEmailData } from '../email/interfaces/email.interface'
 
 @Injectable()
 export class EmailService {
@@ -13,103 +15,87 @@ export class EmailService {
     private readonly configService: ConfigService,
     private readonly patientService: PatientService,
     @Inject(forwardRef(() => UserService))
-    private readonly userService: UserService
+    private readonly userService: UserService,
+    private readonly rabbitMQService: RabbitMQService
   ) {}
 
   async sendEmailForgotPassword(userId: string, resetLink: string) {
-    const user = await this.userService.findById(userId)
+    try {
+      const user = await this.userService.findById(userId)
 
-    const email = user.email
+      if (!user || !user.email) {
+        throw new Error('User not found or email missing')
+      }
 
-    const variables = {
-      resetLink
+      const emailData: ForgotPasswordEmailData = {
+        type: 'forgot-password',
+        to: user.email,
+        subject: 'Password Reset - Hospital Yellow',
+        resetLink: resetLink
+      }
+
+      console.log('Sending forgot password email data:', emailData)
+
+      // Enviar a la cola específica de forgot-password
+      await this.rabbitMQService.publish(RabbitMQService.QUEUES.FORGOT_PASSWORD, emailData)
+
+      return {
+        message: 'Forgot password email queued successfully',
+        emailSentTo: user.email
+      }
+    } catch (error) {
+      console.error('Error queuing forgot password email:', error)
+      throw error
     }
-
-    const formData = new FormData()
-    formData.append('from', 'HospitalYellow <hospitalyellow@gmail.com>')
-    formData.append('to', email)
-    formData.append('subject', 'Password Reset')
-    formData.append('template', 'forgot-password')
-    formData.append('h:X-Mailgun-Variables', JSON.stringify(variables))
-
-    const url = `${this.configService.get<string>('MAILGUN_URL_AND_DOMAIN')}`
-
-    const auth = {
-      username: 'api',
-      password: this.configService.get<string>('MAILGUN_API_KEY')
-    }
-
-    const response = await lastValueFrom(
-      this.httpService.post(url, formData, {
-        auth,
-        headers: formData.getHeaders()
-      })
-    )
-
-    return response.data
   }
 
   async sendEmailWelcome(userId: string): Promise<any> {
-    const user = await this.userService.findById(userId)
-
-    if (!user) {
-      throw new Error('User not found')
-    }
-
-    const email = user.email
-    const tipo = user.role
-
-    let name: string
-
-    switch (tipo) {
-      // case 'doctor':
-      //   const doctor = await this.doctorModel.findOne({ userId }).lean()
-      //   name = doctor?.firstname || 'Doctor'
-      //   break
-
-      case 'patient':
-        const patient = await this.patientService.findByUserId(userId)
-        name = patient?.firstname || 'Paciente'
-        break
-
-      // case 'nurse':
-      //   const nurse = await this.nurseModel.findOne({ userId }).lean()
-      //   name = nurse?.firstname || 'Enfermero/a'
-      //   break
-
-      default:
-        name = 'Usuario'
-    }
-
-    const variables = {
-      firstname: name
-    }
-
-    const formData = new FormData()
-    formData.append('from', 'HospitalYellow <hospitalyellow@gmail.com>')
-    formData.append('to', email)
-    formData.append('subject', 'Welcome to Hospital Yellow')
-    formData.append('template', 'welcome')
-    formData.append('h:X-Mailgun-Variables', JSON.stringify(variables))
-
-    const url = `${this.configService.get<string>('MAILGUN_URL_AND_DOMAIN')}`
-
-    const auth = {
-      username: 'api',
-      password: this.configService.get<string>('MAILGUN_API_KEY')
-    }
-
     try {
-      const response = await lastValueFrom(
-        this.httpService.post(url, formData, {
-          auth,
-          headers: formData.getHeaders()
-        })
-      )
-      return response.data
+      const user = await this.userService.findById(userId)
+
+      if (!user || !user.email) {
+        throw new Error('User not found or email missing')
+      }
+
+      const tipo = user.role
+      let name: string
+
+      switch (tipo) {
+        case 'patient':
+          const patient = await this.patientService.findByUserId(userId)
+          name = patient?.firstname || 'Paciente'
+          break
+        // case 'doctor':
+        //   const doctor = await this.doctorService.findByUserId(userId);
+        //   name = doctor?.firstname || 'Doctor';
+        //   break;
+        // case 'nurse':
+        //   const nurse = await this.nurseService.findByUserId(userId);
+        //   name = nurse?.firstname || 'Enfermero/a';
+        //   break;
+        default:
+          name = 'Usuario'
+      }
+
+      const emailData: WelcomeEmailData = {
+        type: 'welcome',
+        to: user.email,
+        subject: 'Bienvenido al Hospital Yellow',
+        firstname: name
+      }
+
+      console.log('Sending welcome email data:', emailData)
+
+      // Enviar a la cola específica de welcome
+      await this.rabbitMQService.publish(RabbitMQService.QUEUES.WELCOME, emailData)
+
+      return {
+        message: 'Welcome email queued successfully',
+        emailSentTo: user.email
+      }
     } catch (error) {
-      console.error('Error al enviar el correo', error)
-      throw new Error('Error al enviar el correo')
+      console.error('Error queuing welcome email:', error)
+      throw error
     }
   }
 }
