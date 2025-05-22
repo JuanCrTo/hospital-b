@@ -2,7 +2,7 @@ import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, IsStrongPassword, Va
 import { USER_ROLES, UserRole } from '../enums/user-role.enum'
 import { CreatePatientDto } from 'src/patient/dto/create-patient.dto'
 import { Type } from 'class-transformer'
-import { ApiProperty } from '@nestjs/swagger'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 
 export class CreateUserDto {
   @ApiProperty({
@@ -42,7 +42,7 @@ export class CreateUserDto {
   @IsNotEmpty({ message: 'Role is required' })
   role: UserRole
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'details of the patient'
   })
   @IsNotEmpty({ message: 'Patient Details is required' })
