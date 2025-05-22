@@ -80,6 +80,11 @@ export class PatientService {
     return this.patientModel.findById(id).select('-_id').lean()
   }
 
+  // findByUserId
+  async findByUserId(userId: string): Promise<Patient> {
+    return this.patientModel.findOne({ userId }).select('-_id').lean()
+  }
+
   // findByIdentification
   async findByIdentification(identification: string): Promise<Patient> {
     return this.patientModel.findOne({ identification }).select('-_id').lean()

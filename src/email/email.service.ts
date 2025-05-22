@@ -1,24 +1,23 @@
-import { Injectable } from '@nestjs/common'
+import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { HttpService } from '@nestjs/axios'
 import { ConfigService } from '@nestjs/config'
 import * as FormData from 'form-data'
 import { first, lastValueFrom } from 'rxjs'
-import { User } from 'src/user/model/user.schema'
-import { Patient } from 'src/patient/model/patient.schema'
-import { InjectModel } from '@nestjs/mongoose'
-import { Model } from 'mongoose'
+import { PatientService } from 'src/patient/patient.service'
+import { UserService } from 'src/user/user.service'
 
 @Injectable()
 export class EmailService {
   constructor(
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
-    @InjectModel(User.name) private readonly userModel: Model<User>,
-    @InjectModel(Patient.name) private readonly patientModel: Model<Patient>
+    private readonly patientService: PatientService,
+    @Inject(forwardRef(() => UserService))
+    private readonly userService: UserService
   ) {}
 
   async sendEmailForgotPassword(userId: string, resetLink: string) {
-    const user = await this.userModel.findById(userId).lean()
+    const user = await this.userService.findById(userId)
 
     const email = user.email
 
@@ -51,7 +50,7 @@ export class EmailService {
   }
 
   async sendEmailWelcome(userId: string): Promise<any> {
-    const user = await this.userModel.findById(userId).lean()
+    const user = await this.userService.findById(userId)
 
     if (!user) {
       throw new Error('User not found')
@@ -69,7 +68,7 @@ export class EmailService {
       //   break
 
       case 'patient':
-        const patient = await this.patientModel.findOne({ userId }).lean()
+        const patient = await this.patientService.findByUserId(userId)
         name = patient?.firstname || 'Paciente'
         break
 

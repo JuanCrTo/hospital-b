@@ -31,6 +31,7 @@ export class PatientController {
  */
 
   // find all patients
+  @Public()
   @Get()
   async findAll():Promise<Patient[]>{
     return this.patientService.findAll();
