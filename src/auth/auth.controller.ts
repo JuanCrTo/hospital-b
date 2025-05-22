@@ -1,9 +1,8 @@
-import { Body, Controller, NotFoundException, Post } from '@nestjs/common'
+import { Body, Controller, Post } from '@nestjs/common'
 import { Public } from 'src/decorators/public.decorator'
 import { AuthService } from './auth.service'
 import { SignInDto } from './dto/sign-in.dto'
-import { UserService } from 'src/user/user.service'
-import { EmailService } from 'src/email/email.service'
+import { ApiBearerAuth } from '@nestjs/swagger'
 
 @Controller('auth')
 export class AuthController {
@@ -18,6 +17,7 @@ export class AuthController {
     return { access_token }
   }
 
+  @ApiBearerAuth('JWT-auth')
   @Post('forgotpassword')
   async forgotPassword(@Body('email') email: string) {
     return this.authService.handleForgotPassword(email)

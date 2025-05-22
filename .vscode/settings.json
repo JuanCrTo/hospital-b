@@ -22,5 +22,5 @@
     "titleBar.inactiveForeground": "#15202b99"
   },
   "peacock.color": "#FFF44F",
-  "conventionalCommits.scopes": ["User", "auth", "patient", "utils", "email", "pdf", "rabbitmq"]
+  "conventionalCommits.scopes": ["User", "auth", "patient", "utils", "email", "pdf", "rabbitmq", "swagger"]
 }
