@@ -16,7 +16,21 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe())
 
-  const swaggerConfig = new DocumentBuilder().setTitle('Hospital Yellow API').setDescription('API para el sistema de gestión hospitalaria').setVersion('1.0').addBearerAuth().build()
+  const swaggerConfig = new DocumentBuilder()
+    .setTitle('Hospital Yellow API')
+    .setDescription('API para el sistema de gestión hospitalaria')
+    .setVersion('1.0')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        description: 'Enter JWT token',
+        in: 'header'
+      },
+      'JWT-auth'
+    )
+    .build()
 
   const document = SwaggerModule.createDocument(app, swaggerConfig)
 
