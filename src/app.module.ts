@@ -14,6 +14,7 @@ import { ConfigModule } from '@nestjs/config'
 import { MongooseConfigService } from './mongoose-config/mongoose-config.service'
 import { EmailModule } from './email/email.module'
 import { PdfModule } from './pdf/pdf.module'
+import { RabbitMQModule } from './rabbitmq/rabbitmq.module'
 
 @Module({
   imports: [
@@ -30,7 +31,8 @@ import { PdfModule } from './pdf/pdf.module'
     MedicineModule,
     AuthModule,
     EmailModule,
-    PdfModule
+    PdfModule,
+    RabbitMQModule
   ],
   controllers: [AppController],
   providers: [AppService]
