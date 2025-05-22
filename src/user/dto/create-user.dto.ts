@@ -34,7 +34,9 @@ export class CreateUserDto {
   password: string
 
   @ApiProperty({
-    description: 'The role of the user'
+    description: 'The role of the user',
+    enum: USER_ROLES,
+    enumName: 'Role',
   })
   @IsEnum(USER_ROLES, {
     message: 'Role must be either doctor, nurse, or patient'
@@ -43,7 +45,8 @@ export class CreateUserDto {
   role: UserRole
 
   @ApiPropertyOptional({
-    description: 'details of the patient'
+    description: 'details of the patient',
+    type: () => CreatePatientDto
   })
   @IsNotEmpty({ message: 'Patient Details is required' })
   @ValidateNested()
