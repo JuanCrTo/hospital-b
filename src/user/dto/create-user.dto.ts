@@ -6,7 +6,8 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 
 export class CreateUserDto {
   @ApiProperty({
-    description: 'The name of the user'
+    description: 'The name of the user',
+    example: 'user@example.com'
   })
   @IsString({ message: 'Email must be a string' })
   @IsNotEmpty({ message: 'Email is required' })
@@ -14,7 +15,8 @@ export class CreateUserDto {
   email: string
 
   @ApiProperty({
-    description: 'The password of the user'
+    description: 'The password of the user',
+    example: '1234Ab#'
   })
   @IsString({ message: 'Password must be a string' })
   @IsNotEmpty({ message: 'Password is required' })
@@ -35,8 +37,9 @@ export class CreateUserDto {
 
   @ApiProperty({
     description: 'The role of the user',
+    example: 'patient',
     enum: USER_ROLES,
-    enumName: 'Role',
+    enumName: 'Role'
   })
   @IsEnum(USER_ROLES, {
     message: 'Role must be either doctor, nurse, or patient'
