@@ -5,6 +5,7 @@ import { User } from './model/user.schema'
 import { Public } from '../decorators/public.decorator'
 import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiNoContentResponse, ApiOkResponse, ApiOperation, ApiUnauthorizedResponse } from '@nestjs/swagger'
 import { changePasswordResponseDto } from './dto/changePassword-response.dto'
+import { ApiAuthResponses } from 'src/decorators/apiAuthResponse.decorator'
 
 @Controller('user')
 export class UserController {
@@ -24,8 +25,7 @@ export class UserController {
   @Get(':id')
   @ApiOperation({ summary: 'Get user by ID' })
   @ApiOkResponse({ description: 'OK', type: CreateUserDto })
-  @ApiBadRequestResponse({ description: 'Missing or invalid credentials' })
-  @ApiUnauthorizedResponse({ description: 'JWT is missing, invalid or expired' })
+  @ApiAuthResponses()
   async findUserById(@Param('id') id: string): Promise<User> {
     return this.userService.findById(id)
   }
@@ -34,8 +34,7 @@ export class UserController {
   @Get('email/:email')
   @ApiOperation({ summary: 'Get user by email' })
   @ApiOkResponse({ description: 'OK', type: CreateUserDto })
-  @ApiBadRequestResponse({ description: 'Missing or invalid credentials' })
-  @ApiUnauthorizedResponse({ description: 'JWT is missing, invalid or expired' })
+  @ApiAuthResponses()
   async findUserByEmail(@Param('email') email: string): Promise<User> {
     return this.userService.findByEmail(email)
   }
@@ -44,8 +43,7 @@ export class UserController {
   @Get()
   @ApiOperation({ summary: 'Get all users' })
   @ApiOkResponse({ description: 'OK', type: [CreateUserDto] })
-  @ApiBadRequestResponse({ description: 'Missing or invalid credentials' })
-  @ApiUnauthorizedResponse({ description: 'JWT is missing, invalid or expired' })
+  @ApiAuthResponses()
   async findAll(): Promise<User[]> {
     return this.userService.findAll()
   }
@@ -54,8 +52,7 @@ export class UserController {
   @Delete(':id')
   @ApiOperation({ summary: 'Delete user by ID' })
   @ApiOkResponse({ description: 'User deleted successfully' })
-  @ApiBadRequestResponse({ description: 'Missing or invalid credentials' })
-  @ApiUnauthorizedResponse({ description: 'JWT is missing, invalid or expired' })
+  @ApiAuthResponses()
   async deleteById(@Param('id') id: string): Promise<User> {
     return this.userService.delete(id)
   }
@@ -64,8 +61,7 @@ export class UserController {
   @Put(':id/password')
   @ApiOperation({ summary: 'Update user password' })
   @ApiNoContentResponse({ description: 'Password updated successfully', type: CreateUserDto })
-  @ApiBadRequestResponse({ description: 'Missing or invalid credentials' })
-  @ApiUnauthorizedResponse({ description: 'JWT is missing, invalid or expired' })
+  @ApiAuthResponses()
   @ApiBody({ description: 'New password', type: changePasswordResponseDto })
   async updatePassword(@Param('id') id: string, @Body('password') password: string) {
     return this.userService.updatePassword(id, password)

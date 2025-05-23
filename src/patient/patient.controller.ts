@@ -3,8 +3,9 @@ import { PatientService } from './patient.service'
 import { Patient } from './model/patient.schema'
 import { UpdatePatientDto } from './dto/update-user.dto'
 import { Public } from 'src/decorators/public.decorator'
-import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiOkResponse, ApiOperation, ApiUnauthorizedResponse } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiBody, ApiOkResponse, ApiOperation } from '@nestjs/swagger'
 import { CreatePatientDto } from './dto/create-patient.dto'
+import { ApiAuthResponses } from 'src/decorators/apiAuthResponse.decorator'
 
 @Controller('patient')
 export class PatientController {
@@ -55,8 +56,7 @@ export class PatientController {
   @Get('firstname/:firstname')
   @ApiOperation({ summary: 'Get patients by firstname' })
   @ApiOkResponse({ description: 'OK', type: [CreatePatientDto] })
-  @ApiBadRequestResponse({ description: 'Missing or invalid credentials' })
-  @ApiUnauthorizedResponse({ description: 'JWT is missing, invalid or expired' })
+  @ApiAuthResponses()
   async findByFirstname(@Param('firstname') firstname: string): Promise<Patient[]> {
     return this.patientService.findByFirstname(firstname)
   }
@@ -65,8 +65,7 @@ export class PatientController {
   @Get('lastname/:lastname')
   @ApiOperation({ summary: 'Get patients by lastname' })
   @ApiOkResponse({ description: 'OK', type: [CreatePatientDto] })
-  @ApiBadRequestResponse({ description: 'Missing or invalid credentials' })
-  @ApiUnauthorizedResponse({ description: 'JWT is missing, invalid or expired' })
+  @ApiAuthResponses()
   async findByLastname(@Param('lastname') lastname: string): Promise<Patient[]> {
     return this.patientService.findByLastname(lastname)
   }
