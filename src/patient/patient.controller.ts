@@ -3,7 +3,7 @@ import { PatientService } from './patient.service';
 import { Patient } from './model/patient.schema';
 import { UpdatePatientDto } from './dto/update-user.dto';
 import { Public } from 'src/decorators/public.decorator';
-import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CreatePatientDto } from './dto/create-patient.dto';
 
 @Controller('patient')
@@ -14,6 +14,7 @@ export class PatientController {
   @Put(':id')
   @ApiOperation({ summary: 'Update a patient by ID' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Patient updated successfully', type: CreatePatientDto })
+  @ApiBody({ description: 'Patient data', type: CreatePatientDto })
   async update(@Param('id') id: string, @Body() updatePatientDto: UpdatePatientDto): Promise<Patient> {
     return this.patientService.update(id, updatePatientDto);
   }
@@ -65,5 +66,4 @@ export class PatientController {
   async findByLastname(@Param('lastname') lastname: string): Promise<Patient[]> {
     return this.patientService.findByLastname(lastname);
   }
-
 }

@@ -3,7 +3,8 @@ import { UserService } from './user.service'
 import { CreateUserDto } from './dto/create-user.dto'
 import { User } from './model/user.schema'
 import { Public } from '../decorators/public.decorator'
-import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger'
+import { changePasswordResponseDto } from './dto/changePassword-response.dto'
 
 @Controller('user')
 export class UserController {
@@ -13,6 +14,7 @@ export class UserController {
   @Post('create')
   @ApiOperation({ summary: 'Create a new user' })
   @ApiResponse({ status: HttpStatus.CREATED, description: 'User created successfully', type: CreateUserDto })
+  @ApiBody({ description: 'User data', type: CreateUserDto })
   async createUser(@Body() createUserDto: CreateUserDto): Promise<User> {
     return this.userService.create(createUserDto)
   }
@@ -54,6 +56,7 @@ export class UserController {
   @ApiOperation({ summary: 'Update user password' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Password updated successfully', type: CreateUserDto })
   @ApiResponse({ status: HttpStatus.NO_CONTENT, description: 'Password updated successfully', type: CreateUserDto })
+  @ApiBody({ description: 'New password', type: changePasswordResponseDto })
   async updatePassword(@Param('id') id: string, @Body('password') password: string) {
     return this.userService.updatePassword(id, password)
   }
