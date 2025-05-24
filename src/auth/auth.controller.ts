@@ -7,6 +7,7 @@ import { ForgotPasswordResponseDto } from './dto/forgot-password-response.dto'
 import { SignInResponseDto } from './dto/signIn-response.dto'
 import { ForgotPasswordBodyDto } from './dto/forgot-password-body.dto'
 import { ApiAuthResponses } from 'src/decorators/apiAuthResponse.decorator'
+import { credentials } from 'amqplib'
 
 @Controller('auth')
 export class AuthController {
@@ -15,12 +16,17 @@ export class AuthController {
   @Public()
   @Post('signIn')
   @ApiOperation({ summary: 'Sign in a user' })
-  @ApiOkResponse({ description: 'User signed in successfully', type: SignInResponseDto })
+  @ApiOkResponse({
+    description: 'User signed in successfully',
+    type: SignInResponseDto
+  })
   @ApiBadRequestResponse({ description: 'Missing or invalid credentials' })
-  @ApiBody({ description: 'User credentials', type: SignInDto })
-  async signIn(@Body() { email, password }: SignInDto): Promise<{ access_token: string }> {
-    const access_token = await this.authService.signIn(email, password)
-    return { access_token }
+  @ApiBody({
+    description: 'User credentials',
+    type: SignInDto
+  })
+  async signIn(@Body() credentials: SignInDto): Promise<SignInResponseDto> {
+    return this.authService.signIn(credentials.email, credentials.password)
   }
 
   @ApiBearerAuth('JWT-auth')

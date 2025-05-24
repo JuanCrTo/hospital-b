@@ -6,6 +6,7 @@ import { IJwtPayload } from './interfaces/jwt-payload.interface'
 import { IUser } from 'src/user/interfaces/user.interface'
 import { ConfigService } from '@nestjs/config'
 import { EmailService } from 'src/email/email.service'
+import { SignInResponseDto } from './dto/signIn-response.dto'
 
 @Injectable()
 export class AuthService {
@@ -16,7 +17,7 @@ export class AuthService {
     private readonly emailService: EmailService
   ) {}
 
-  async signIn(email: string, password: string): Promise<string> {
+  async signIn(email: string, password: string): Promise<SignInResponseDto> {
     const user = await this.userService.findByEmail(email)
     if (!user) throw new UnauthorizedException()
 
@@ -24,7 +25,9 @@ export class AuthService {
     if (!isPasswordValid) throw new UnauthorizedException()
 
     const payload: IJwtPayload = { userId: user._id.toString() }
-    return await this.jwtService.signAsync(payload)
+    const access_token = await this.jwtService.signAsync(payload)
+
+    return { access_token }
   }
 
   // generateResetTokenJWT
