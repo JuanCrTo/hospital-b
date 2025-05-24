@@ -1,8 +1,8 @@
-import { ApiProperty } from '@nestjs/swagger'
+import { ApiResponseProperty } from '@nestjs/swagger'
 
 export class changePasswordResponseDto {
-  @ApiProperty({
-    description: 'password changed successfully',
+  @ApiResponseProperty({
+    type: 'string',
     example: 'Password changed successfully'
   })
   password: string
