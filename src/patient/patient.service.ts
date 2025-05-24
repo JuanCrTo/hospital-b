@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Patient } from './model/patient.schema'
 import { Model } from 'mongoose'
-import { CreatePatientDto } from './dto/create-patient.dto'
-import { UpdatePatientDto } from './dto/update-user.dto'
+import { CreatePatientDto } from './dto/request/create-patient-request.dto'
+import { UpdatePatientDto } from './dto/request/update-user-request.dto'
 import { addLocationToHistory, calculateAge, calculateClinicalAge, getCoordinatesFromLocation } from 'src/utils/utils'
 
 @Injectable()

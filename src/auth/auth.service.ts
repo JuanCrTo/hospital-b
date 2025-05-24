@@ -6,7 +6,7 @@ import { IJwtPayload } from './interfaces/jwt-payload.interface'
 import { IUser } from 'src/user/interfaces/user.interface'
 import { ConfigService } from '@nestjs/config'
 import { EmailService } from 'src/email/email.service'
-import { SignInResponseDto } from './dto/signIn-response.dto'
+import { SignInResponseDto } from './dto/response/signIn-auth-response.dto'
 
 @Injectable()
 export class AuthService {

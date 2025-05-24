@@ -1,10 +1,10 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common'
 import { UserService } from './user.service'
-import { CreateUserDto } from './dto/create-user.dto'
+import { CreateUserDto } from './dto/request/create-user-request.dto'
 import { User } from './model/user.schema'
 import { Public } from '../decorators/public.decorator'
-import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiNoContentResponse, ApiOkResponse, ApiOperation, ApiUnauthorizedResponse } from '@nestjs/swagger'
-import { changePasswordResponseDto } from './dto/changePassword-response.dto'
+import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiNoContentResponse, ApiOkResponse, ApiOperation } from '@nestjs/swagger'
+import { changePasswordResponseDto } from './dto/response/changePassword-user-response.dto'
 import { ApiAuthResponses } from 'src/decorators/apiAuthResponse.decorator'
 
 @Controller('user')
@@ -14,7 +14,10 @@ export class UserController {
   @Public()
   @Post('create')
   @ApiOperation({ summary: 'Create a new user' })
-  @ApiCreatedResponse({ description: 'User created successfully', type: CreateUserDto })
+  @ApiCreatedResponse({
+    description: 'User created successfully',
+    type: CreateUserDto
+  })
   @ApiBadRequestResponse({ description: 'Missing or invalid credentials' })
   @ApiBody({ description: 'User data', type: CreateUserDto })
   async createUser(@Body() createUserDto: CreateUserDto): Promise<User> {
@@ -24,7 +27,10 @@ export class UserController {
   @ApiBearerAuth('JWT-auth')
   @Get(':id')
   @ApiOperation({ summary: 'Get user by ID' })
-  @ApiOkResponse({ description: 'OK', type: CreateUserDto })
+  @ApiOkResponse({
+    description: 'OK',
+    type: CreateUserDto
+  })
   @ApiAuthResponses()
   async findUserById(@Param('id') id: string): Promise<User> {
     return this.userService.findById(id)
@@ -33,7 +39,10 @@ export class UserController {
   @ApiBearerAuth('JWT-auth')
   @Get('email/:email')
   @ApiOperation({ summary: 'Get user by email' })
-  @ApiOkResponse({ description: 'OK', type: CreateUserDto })
+  @ApiOkResponse({
+    description: 'OK',
+    type: CreateUserDto
+  })
   @ApiAuthResponses()
   async findUserByEmail(@Param('email') email: string): Promise<User> {
     return this.userService.findByEmail(email)
@@ -42,7 +51,10 @@ export class UserController {
   @ApiBearerAuth('JWT-auth')
   @Get()
   @ApiOperation({ summary: 'Get all users' })
-  @ApiOkResponse({ description: 'OK', type: [CreateUserDto] })
+  @ApiOkResponse({
+    description: 'OK',
+    type: [CreateUserDto]
+  })
   @ApiAuthResponses()
   async findAll(): Promise<User[]> {
     return this.userService.findAll()
@@ -60,7 +72,10 @@ export class UserController {
   @ApiBearerAuth('JWT-auth')
   @Put(':id/password')
   @ApiOperation({ summary: 'Update user password' })
-  @ApiNoContentResponse({ description: 'Password updated successfully', type: CreateUserDto })
+  @ApiNoContentResponse({
+    description: 'Password updated successfully',
+    type: CreateUserDto
+  })
   @ApiAuthResponses()
   @ApiBody({ description: 'New password', type: changePasswordResponseDto })
   async updatePassword(@Param('id') id: string, @Body('password') password: string) {
