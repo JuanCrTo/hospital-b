@@ -30,7 +30,6 @@ export class AuthService {
     return { access_token }
   }
 
-  // generateResetTokenJWT
   async generateResetTokenJWT(user: IUser): Promise<string> {
     const payload: IJwtPayload = { userId: user._id }
     return this.jwtService.signAsync(payload)

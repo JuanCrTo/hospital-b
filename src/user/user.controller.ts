@@ -12,7 +12,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Public()
-  @Post('create')
+  @Post()
   @ApiOperation({ summary: 'Create a new user' })
   @ApiCreatedResponse({
     description: 'User created successfully',
