@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-import { UserModule } from 'src/user/user.module';
+import { UserModule } from '../user/user.module';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtSignInConfigService } from './jwt-sign-in-config/jwt-sign-in-config.service';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth.guard';
-import { EmailModule } from 'src/email/email.module';
+import { EmailModule } from '../email/email.module';
 
 @Module({
   imports: [

@@ -1,5 +1,3 @@
-//* BORRADOR
-
 import {
     registerDecorator,
     ValidationArguments,

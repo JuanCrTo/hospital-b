@@ -1,7 +1,7 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { RabbitMQService } from '../rabbitmq/rabbitmq.service';
-import { EmailData, ForgotPasswordEmailData, WelcomeEmailData } from './interfaces/email.interface';
 import * as mailgun from 'mailgun-js';
+import { RabbitMQService } from '../rabbitmq/rabbitmq.service';
+import { ForgotPasswordEmailData, WelcomeEmailData } from './interfaces/email.interface';
 
 @Injectable()
 export class EmailConsumer implements OnModuleInit {
