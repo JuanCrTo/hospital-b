@@ -1,6 +1,6 @@
 import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, IsStrongPassword, ValidateNested } from 'class-validator'
 import { USER_ROLES, UserRole } from '../../enums/user-role.enum'
-import { CreatePatientDto } from '@/patient/dto/request/create-patient-request.dto'
+import { CreatePatientDto } from 'src/patient/dto/request/create-patient-request.dto'
 import { Type } from 'class-transformer'
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 
