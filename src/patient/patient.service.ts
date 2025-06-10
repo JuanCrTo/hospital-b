@@ -4,7 +4,7 @@ import { Patient } from './model/patient.schema'
 import { Model } from 'mongoose'
 import { CreatePatientDto } from './dto/request/create-patient-request.dto'
 import { UpdatePatientDto } from './dto/request/update-user-request.dto'
-import { addLocationToHistory, calculateAge, calculateClinicalAge, getCoordinatesFromLocation } from 'src/utils/utils'
+import { addLocationToHistory, calculateAge, calculateClinicalAge, getCoordinatesFromLocation } from '@/utils/utils'
 
 @Injectable()
 export class PatientService {
