@@ -5,7 +5,7 @@ import { User } from './model/user.schema'
 import { Public } from '../decorators/public.decorator'
 import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiNoContentResponse, ApiOkResponse, ApiOperation } from '@nestjs/swagger'
 import { changePasswordResponseDto } from './dto/response/changePassword-user-response.dto'
-import { ApiAuthResponses } from 'src/decorators/apiAuthResponse.decorator'
+import { ApiAuthResponses } from '@/decorators/apiAuthResponse.decorator'
 
 @Controller('user')
 export class UserController {

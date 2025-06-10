@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
 import * as cron from 'node-cron'
-import { PatientService } from 'src/patient/patient.service'
+import { PatientService } from './patient.service'
 
 @Injectable()
 export class PatientCron {
