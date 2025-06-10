@@ -29,7 +29,7 @@ export class RabbitMQService implements OnModuleInit, OnModuleDestroy {
 
   async onModuleInit() {
     try {
-      this.conn = await amqp.connect(process.env.RABBITMQ_URL || 'amqp://localhost');
+      this.conn = await amqp.connect(process.env.RABBITMQ_URL);
       this.ch = await this.conn.createChannel();
       
       // Configuración de ambas colas
