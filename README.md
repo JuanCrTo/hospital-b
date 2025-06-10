@@ -1,85 +1,316 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 🏥 Hospital Yellow API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+API RESTful para la gestión hospitalaria. Permite administrar pacientes, doctores, enfermeros, envío de correos automatizados, documentación Swagger, colas de trabajo y más.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+🔗 [🔍 Ver Documentación Swagger desplegada](https://hospital-production.up.railway.app/api)
 
-## Description
+---
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 🧑‍💻 Proyecto en Producción
 
-## Project setup
+- 🔧 **Backend desplegado en Railway**
+- 🛢️ **Base de datos MongoDB en Railway**
+  - Usando **Serverless MongoDB (Cold Starts)**
+  - Ideal para pruebas técnicas y demostraciones
+- 🔐 JWT configurado y Swagger protegido
+- 🐇 RabbitMQ para colas de envío de correos
 
-```bash
-$ npm install
-```
+---
 
-## Compile and run the project
+## 📦 Tecnologías Usadas
 
-```bash
-# development
-$ npm run start
+- **Backend Framework:** [NestJS](https://nestjs.com/)
+- **Lenguaje:** TypeScript
+- **Base de Datos:** MongoDB (Mongoose ODM)
+- **Autenticación:** JWT
+- **Colas de Trabajo:** RabbitMQ
+- **Correo:** Mailgun
+- **Media Storage:** Cloudinary (en desarrollo)
+- **Documentación:** Swagger
+- **Despliegue:** Railway
 
-# watch mode
-$ npm run start:dev
+---
 
-# production mode
-$ npm run start:prod
-```
+## 🧩 Arquitectura
 
-## Run tests
+- Arquitectura modular siguiendo principios de Clean Architecture.
+- Separación clara entre controladores, servicios, DTOs, modelos y validaciones.
+- Uso de pipes y guards para lógica transversal.
+
+---
+
+## 📂 Estructura del Proyecto
 
 ```bash
-# unit tests
-$ npm run test
+hospital-api/
+├── src/
+│   ├── auth/                  # Módulo de autenticación
+│   │   ├── dto/
+│   │   ├── interfaces/
+│   │   ├── auth.controller.ts
+│   │   ├── auth.guard.ts
+│   │   ├── auth.module.ts
+│   │   └── auth.service.ts
+│   │   └── jwt-reset.module.ts
+│   │
+│   ├── decorators/                # Módulo de decoradores
+│   │   ├── apiAuthResponse.decorator.ts
+│   │   ├── isPastDate.decorator.ts
+│   │   └── public.decorator.ts
+│   │
+│   ├── doctor/                # Módulo de doctores
+│   │   ├── dto/
+│   │   ├── interfaces/
+│   │   ├── model/
+│   │   ├── doctor.controller.ts
+│   │   ├── doctor.module.ts
+│   │   └── doctor.service.ts
+│   │
+│   ├── email/                  # Envío de correos
+│   │   ├── interfaces/
+│   │   ├── email.consumer.ts   # RabbitMQ consumer
+│   │   ├── email.module.ts
+│   │   ├── email.service.ts
+│   │
+│   ├── nurse/                # Módulo de enfermeros
+│   │   ├── dto/
+│   │   ├── interfaces/
+│   │   ├── model/
+│   │   ├── nurse.controller.ts
+│   │   ├── nurse.module.ts
+│   │   └── nurse.service.ts
+│   │
+│   ├── patient/               # Módulo de pacientes
+│   │   ├── dto/
+│   │   ├── interfaces/
+│   │   ├── model/
+│   │   ├── patient.controller.ts
+│   │   ├── patient.cron.ts
+│   │   ├── patient.module.ts
+│   │   └── patient.service.ts
+│   │
+│   ├── rabbitmq/                   # Manejo de colas con RabbitMQ
+│   │   ├── rabbitmq.module.ts
+│   │   ├── rabbitmq.service.ts
+│   │
+│   ├── user/               # Módulo de usuarios
+│   │   ├── dto/
+│   │   ├── enums/
+│   │   ├── interfaces/
+│   │   ├── model/
+│   │   ├── user.controller.ts
+│   │   ├── user.module.ts
+│   │   └── user.service.ts
+│   │
+│   ├── utils/                   # Funciones auxiliares
+│   │   ├── utils.ts
+│   │
+│   ├── app.controller.ts
+│   ├── app.module.ts
+│   ├── app.service.ts
+│   ├── main.ts
+│
+├── .env.example
+├── .gitignore
+├── package.json
+├── tsconfig.json
+└── README.md
 
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
 ```
 
-## Resources
+---
 
-Check out a few resources that may come in handy when working with NestJS:
+## 🔐 Autenticación
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+- Autenticación basada en JWT.
+- Middleware y guards personalizados para proteger rutas según el rol del usuario.
+- Soporte para recuperación de contraseña con tokens seguros.
 
-## Support
+---
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## 📬 Mailgun + RabbitMQ
 
-## Stay in touch
+- Emails de bienvenida y recuperación de contraseña automatizadas.
+- RabbitMQ gestiona las colas de envío asíncrono.
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+---
 
-## License
+## 🧾 Documentación Swagger
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+La API está completamente documentada usando Swagger:
+- Contiene descripciones, modelos y autorización con JWT.
+- Estructura uniforme para respuestas HTTP (`statusCode`, `message`, `data`, `errors`).
+
+🔗 [🔍 Ver Documentación Swagger desplegada](https://hospital-production.up.railway.app/api)
+
+---
+
+## 📄 Ejemplo de Respuesta Estandarizada
+
+🧪 Esta funcionalidad está en proceso de implementación. El objetivo es que todas las respuestas de la API sigan una estructura base coherente y predecible, facilitando el consumo desde el frontend, la documentación en Swagger y la trazabilidad de errores y logs.
+
+### 🔧 Estado actual:
+Actualmente, algunos endpoints ya siguen esta estructura, pero **no está aplicado de forma global** con un interceptor ni en todos los módulos.
+
+### 🧾 Ejemplo en Swagger  (previsto)
+```typescript
+@ApiResponse({
+  status: 200,
+  description: 'Operación exitosa',
+  type: SuccessResponseDto,
+})
+@ApiResponse({
+  status: 400,
+  description: 'Error de validación',
+  type: ErrorResponseDto,
+})
+@ApiResponse({
+  status: 500,
+  description: 'Error interno del servidor',
+  type: InternalErrorDto,
+})
+
+```
+
+### 🧾 DTOs de Respuesta
+```typescript
+export class SuccessResponseDto {
+  statusCode: number;
+  message: string;
+  data: any;
+  meta?: any;
+}
+
+export class ErrorResponseDto {
+  statusCode: number;
+  message: string;
+  errors?: string[];
+}
+
+export class InternalErrorDto {
+  statusCode: number;
+  message: string;
+  debug?: any;
+}
+
+```
+
+> 💡 Esta estandarización se encuentra listada en el 📍Roadmap como una mejora pendiente y se integrará en versiones futuras del proyecto.
+
+## 🚀 Cómo Ejecutar Localmente
+
+Sigue estos pasos para ejecutar el backend de la API de Hospitales en tu entorno local:
+
+### 1. 🔁 Clonar el repositorio
+
+```bash
+git clone https://github.com/JuanCrTo/hospital-b.git
+```
+
+### 2. 📦 Instalar dependencias
+npm install
+
+### 3. 🛠️ Crear archivo de entorno
+* Copia el archivo .env.example y crea el archivo .env
+* Edita el archivo .env con tus variables reales (MongoDB, JWT, Mailgun, RabbitMQ, etc.).
+
+### 4. 🧪 Verificar dependencias externas
+Asegúrate de tener ejecutando o configurado correctamente:
+
+* 🐇 RabbitMQ (puede estar en Railway o local)
+* 🍃 MongoDB (local o desplegado)
+* Mailgun y Cloudinary si vas a probar envíos de correo y subida de archivos
+
+### 5. 🚦 Levantar el servidor en modo desarrollo
+```bash
+npm run start:dev
+```
+
+### 6. 📲 Probar la API
+* Abre Postman o tu cliente HTTP favorito
+* Usa la URL base: http://localhost:4000
+* Accede a la documentación en Swagger en:
+http://localhost:4000/api
+
+### 7. ✅ Comprobación
+Si todo está bien:
+
+* Swagger debería cargar en /api
+* Los endpoints deberían responder correctamente
+* Si usas colas (RabbitMQ), asegúrate que esté activa la conexión
+
+---
+
+## 🌍 Despliegue
+
+- El backend y la base de datos MongoDB están desplegados en **Railway**.
+- Railway maneja automáticamente el certificado **HTTPS**.
+- Configurado con **CORS**, acceso con **JWT**, documentación Swagger y colas con **RabbitMQ**.
+- La base de datos usa 1 vCPU y 2 GB de RAM (suficiente para demo técnica).
+
+---
+
+## 🗺️ Roadmap
+### ✅ MVP Actual
+
+- [x] CRUD de doctores y pacientes
+- [x] Autenticación JWT
+- [x] Envío de correos por Mailgun + RabbitMQ
+- [x] Documentación Swagger
+- [x] Despliegue en Railway
+
+### 🧩 Mejoras Pendientes
+
+- [ ] Estandarización de respuestas HTTP para todos los endpoints
+- [ ] Despliegue completo del backend con CSRF y cookies seguras
+- [ ] Protección brute-force y rate limiting
+- [ ] Logs y trazabilidad de acciones críticas
+- [ ] Tests unitarios y e2e con Jest
+- [ ] Endpoint para exportar PDF de historial médico
+
+---
+
+
+## 🗺️ Roadmap
+
+Este roadmap detalla las funcionalidades actuales del proyecto y las mejoras planificadas para versiones futuras. Su propósito es guiar el desarrollo continuo y demostrar la planificación técnica a largo plazo.
+
+### ✅ MVP Completo
+
+- [x] CRUD para Doctores, Enfermeros y Pacientes
+- [x] Autenticación basada en JWT
+- [x] Envío de correos con Mailgun mediante colas RabbitMQ
+- [x] Documentación completa con Swagger
+- [x] Despliegue de Backend en Railway
+- [x] Despliegue de Base de Datos MongoDB en Railway
+- [x] Variables de entorno gestionadas mediante `.env`
+- [x] Integración con servicios externos de Google Maps para ubicación de pacientes
+
+### 🚧 Mejoras en Proceso
+
+- [ ] Estandarización de todas las respuestas HTTP (estructura uniforme para 200, 201, 400, 404, 500, etc.)
+- [ ] Integración completa de cookies seguras con CSRF protection
+- [ ] Logs detallados para trazabilidad de accesos y acciones críticas
+- [ ] Agregado de configuración para protección contra ataques brute-force y rate limiting
+- [ ] Limpieza y optimización del código (refactor de controladores y servicios)
+
+---
+
+### 📦 Funcionalidades Avanzadas Futuras
+
+- [ ] Exportación automática de historiales médicos en PDF
+- [ ] Soporte multirol (SuperAdministrador y Administrador)
+- [ ] Dashboard de estadísticas para gestión hospitalaria
+- [ ] Gestión de archivos adjuntos (documentación médica) con Cloudinary
+
+---
+
+## 👨‍💼 Objetivo del Proyecto
+Este proyecto fue construido con el propósito de mostrar habilidades avanzadas en backend:
+
+* ✅ Arquitectura limpia y mantenible
+* ✅ Buenas prácticas de desarrollo
+* ✅ Despliegue real y funcional en la nube
+* ✅ Seguridad, modularidad y escalabilidad
+
+---
