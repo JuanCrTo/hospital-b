@@ -1,10 +1,10 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { HttpService } from '@nestjs/axios'
 import { ConfigService } from '@nestjs/config'
-import { PatientService } from '@/patient/patient.service'
-import { UserService } from '@/user/user.service'
-import { RabbitMQService } from '@/rabbitmq/rabbitmq.service'
-import { ForgotPasswordEmailData, WelcomeEmailData } from '@/email/interfaces/email.interface'
+import { PatientService } from 'src/patient/patient.service'
+import { UserService } from 'src/user/user.service'
+import { RabbitMQService } from 'src/rabbitmq/rabbitmq.service'
+import { ForgotPasswordEmailData, WelcomeEmailData } from 'src/email/interfaces/email.interface'
 
 @Injectable()
 export class EmailService {
