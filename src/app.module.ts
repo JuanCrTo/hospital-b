@@ -1,22 +1,40 @@
-import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { DoctorModule } from './doctor/doctor.module';
-import { UserModule } from './user/user.module';
-import { PacienteModule } from './paciente/paciente.module';
-import { EnfermeroModule } from './enfermero/enfermero.module';
-import { CitaModule } from './citas/cita.module';
-import { HistorialModule } from './historial/historial.module';
-import { MedicamentoModule } from './medicamento/medicamento.module';
-import { NurseModule } from './nurse/nurse.module';
-import { PatientModule } from './patient/patient.module';
-import { AppointmentModule } from './appointment/appointment.module';
-import { MedicalRecordModule } from './medical-record/medical-record.module';
-import { MedicineModule } from './medicine/medicine.module';
+import { Module } from '@nestjs/common'
+import { AppController } from './app.controller'
+import { AppService } from './app.service'
+import { DoctorModule } from './doctor/doctor.module'
+import { UserModule } from './user/user.module'
+import { NurseModule } from './nurse/nurse.module'
+import { PatientModule } from './patient/patient.module'
+import { AppointmentModule } from './appointment/appointment.module'
+import { MedicalRecordModule } from './medical-record/medical-record.module'
+import { MedicineModule } from './medicine/medicine.module'
+import { AuthModule } from './auth/auth.module'
+import { MongooseModule } from '@nestjs/mongoose'
+import { ConfigModule } from '@nestjs/config'
+import { MongooseConfigService } from './mongoose-config/mongoose-config.service'
+import { EmailModule } from './email/email.module'
+import { PdfModule } from './pdf/pdf.module'
+import { RabbitMQModule } from './rabbitmq/rabbitmq.module'
 
 @Module({
-  imports: [DoctorModule, UserModule, PacienteModule, EnfermeroModule, CitaModule, HistorialModule, MedicamentoModule, NurseModule, PatientModule, AppointmentModule, MedicalRecordModule, MedicineModule],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true
+    }),
+    MongooseModule.forRootAsync({ useClass: MongooseConfigService }),
+    DoctorModule,
+    UserModule,
+    NurseModule,
+    PatientModule,
+    AppointmentModule,
+    MedicalRecordModule,
+    MedicineModule,
+    AuthModule,
+    EmailModule,
+    PdfModule,
+    RabbitMQModule
+  ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService]
 })
 export class AppModule {}
