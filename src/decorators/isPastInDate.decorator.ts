@@ -1,9 +1,9 @@
 import { registerDecorator, ValidationArguments, ValidationOptions } from 'class-validator'
 
-export function IsPastDate(validationOptions?: ValidationOptions) {
+export function IsPastInDate(validationOptions?: ValidationOptions) {
   return function (object: Object, propertyName: string) {
     registerDecorator({
-      name: 'isPastDate',
+      name: 'isPastInDate',
       target: object.constructor,
       propertyName: propertyName,
       options: validationOptions,
