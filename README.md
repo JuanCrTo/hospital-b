@@ -2,18 +2,19 @@
 
 API RESTful para la gestión hospitalaria. Permite administrar pacientes, doctores, enfermeros, envío de correos automatizados, documentación Swagger, colas de trabajo y más.
 
-🔗 [🔍 Ver Documentación Swagger desplegada](https://hospital-production.up.railway.app/api)
+🔗 [🔍 Ver Documentación Swagger desplegada](https://hospital-b-prod.up.railway.app/api)
 
 ---
 
 ## 🧑‍💻 Proyecto en Producción
 
 - 🔧 **Backend desplegado en Railway**
+  - Usando **Serverless MongoDB (Cold Starts)**
 - 🛢️ **Base de datos MongoDB en Railway**
   - Usando **Serverless MongoDB (Cold Starts)**
-  - Ideal para pruebas técnicas y demostraciones
 - 🔐 JWT configurado y Swagger protegido
-- 🐇 RabbitMQ para colas de envío de correos
+- 🐇 **RabbitMQ desplegado en CloudAMQP**
+  - Utilizado para la gestión de colas
 
 ---
 
@@ -27,7 +28,10 @@ API RESTful para la gestión hospitalaria. Permite administrar pacientes, doctor
 - **Correo:** Mailgun
 - **Media Storage:** Cloudinary (en desarrollo)
 - **Documentación:** Swagger
-- **Despliegue:** Railway
+- **Despliegue:**
+  - Backend y Base de Datos: Railway
+  - Colas de Trabajo: CloudAMQP (RabbitMQ)
+
 
 ---
 
@@ -141,7 +145,7 @@ La API está completamente documentada usando Swagger:
 - Contiene descripciones, modelos y autorización con JWT.
 - Estructura uniforme para respuestas HTTP (`statusCode`, `message`, `data`, `errors`).
 
-🔗 [🔍 Ver Documentación Swagger desplegada](https://hospital-production.up.railway.app/api)
+🔗 [🔍 Ver Documentación Swagger desplegada](https://hospital-b-prod.up.railway.app/api)
 
 ---
 
@@ -197,6 +201,8 @@ export class InternalErrorDto {
 
 > 💡 Esta estandarización se encuentra listada en el 📍Roadmap como una mejora pendiente y se integrará en versiones futuras del proyecto.
 
+---
+
 ## 🚀 Cómo Ejecutar Localmente
 
 Sigue estos pasos para ejecutar el backend de la API de Hospitales en tu entorno local:
@@ -217,7 +223,7 @@ npm install
 ### 4. 🧪 Verificar dependencias externas
 Asegúrate de tener ejecutando o configurado correctamente:
 
-* 🐇 RabbitMQ (puede estar en Railway o local)
+* 🐇 RabbitMQ (puede estar en CloudAMQP o local)
 * 🍃 MongoDB (local o desplegado)
 * Mailgun y Cloudinary si vas a probar envíos de correo y subida de archivos
 
@@ -228,9 +234,10 @@ npm run start:dev
 
 ### 6. 📲 Probar la API
 * Abre Postman o tu cliente HTTP favorito
-* Usa la URL base: http://localhost:4000
-* Accede a la documentación en Swagger en:
+* Usa la URL base: `http://localhost:4000`
+* Accede a la documentación Swagger:
 http://localhost:4000/api
+
 
 ### 7. ✅ Comprobación
 Si todo está bien:
@@ -243,33 +250,12 @@ Si todo está bien:
 
 ## 🌍 Despliegue
 
-- El backend y la base de datos MongoDB están desplegados en **Railway**.
+- El backend y la base de datos MongoDB están desplegados en **Railway** (1 vCPU y 3 GB de RAM).
 - Railway maneja automáticamente el certificado **HTTPS**.
-- Configurado con **CORS**, acceso con **JWT**, documentación Swagger y colas con **RabbitMQ**.
-- La base de datos usa 1 vCPU y 2 GB de RAM (suficiente para demo técnica).
+- Configurado con **CORS**, acceso con **JWT**, documentación Swagger.
+- Las colas de trabajo con **RabbitMQ** están gestionadas desde **CloudAMQP**.
 
 ---
-
-## 🗺️ Roadmap
-### ✅ MVP Actual
-
-- [x] CRUD de doctores y pacientes
-- [x] Autenticación JWT
-- [x] Envío de correos por Mailgun + RabbitMQ
-- [x] Documentación Swagger
-- [x] Despliegue en Railway
-
-### 🧩 Mejoras Pendientes
-
-- [ ] Estandarización de respuestas HTTP para todos los endpoints
-- [ ] Despliegue completo del backend con CSRF y cookies seguras
-- [ ] Protección brute-force y rate limiting
-- [ ] Logs y trazabilidad de acciones críticas
-- [ ] Tests unitarios y e2e con Jest
-- [ ] Endpoint para exportar PDF de historial médico
-
----
-
 
 ## 🗺️ Roadmap
 
