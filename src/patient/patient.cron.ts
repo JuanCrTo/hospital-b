@@ -12,7 +12,7 @@ export class PatientCron {
 
   private init() {
     // Ejecutar cada 30 segundos
-    cron.schedule('*/30 * * * * *', async () => {
+    cron.schedule('0 */6 * * *', async () => {
       const patients = await this.patientService.findAll()
       this.logger.log(`Pacientes actualizados: ${patients.length}`)
     })
