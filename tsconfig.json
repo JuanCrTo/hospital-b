@@ -10,18 +10,6 @@
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
-    "paths": {
-      "@/*": ["src/*"],
-      "@/auth/*": ["src/auth/*"],
-      "@/decorators/*": ["src/decorators/*"],
-      "@/doctor/*": ["src/doctor/*"],
-      "@/email/*": ["src/email/*"],
-      "@/nurse/*": ["src/nurse/*"],
-      "@/patient/*": ["src/patient/*"],
-      "@/rabbitmq/*": ["src/rabbitmq/*"],
-      "@/user/*": ["src/user/*"],
-      "@/utils/*": ["src/utils/*"]
-    },
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": false,
