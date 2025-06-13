@@ -2,10 +2,10 @@ import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common'
 import { UserService } from './user.service'
 import { CreateUserDto } from './dto/request/create-user-request.dto'
 import { User } from './model/user.schema'
-import { Public } from '../decorators/public.decorator'
+import { Public } from '../decorators/request/public.decorator'
 import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiNoContentResponse, ApiOkResponse, ApiOperation } from '@nestjs/swagger'
 import { changePasswordResponseDto } from './dto/response/changePassword-user-response.dto'
-import { ApiAuthResponses } from 'src/decorators/apiAuthResponse.decorator'
+import { ApiAuthResponses } from 'src/decorators/auth/apiAuthResponse.decorator'
 
 @Controller('user')
 export class UserController {

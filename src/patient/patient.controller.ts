@@ -2,10 +2,10 @@ import { Body, Controller, Get, Param, Put } from '@nestjs/common'
 import { PatientService } from './patient.service'
 import { Patient } from './model/patient.schema'
 import { UpdatePatientDto } from './dto/request/update-user-request.dto'
-import { Public } from 'src/decorators/public.decorator'
+import { Public } from 'src/decorators/request/public.decorator'
 import { ApiBearerAuth, ApiBody, ApiOkResponse, ApiOperation } from '@nestjs/swagger'
 import { CreatePatientDto } from './dto/request/create-patient-request.dto'
-import { ApiAuthResponses } from 'src/decorators/apiAuthResponse.decorator'
+import { ApiAuthResponses } from 'src/decorators/auth/apiAuthResponse.decorator'
 
 @Controller('patient')
 export class PatientController {

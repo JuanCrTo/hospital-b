@@ -1,5 +1,5 @@
 import { Body, Controller, Post } from '@nestjs/common'
-import { Public } from '../decorators/public.decorator'
+import { Public } from '../decorators/request/public.decorator'
 import { AuthService } from './auth.service'
 import { SignInDto } from './dto/request/signIn-auth-request.dto'
 import { ApiBadRequestResponse, ApiBody, ApiOkResponse, ApiOperation } from '@nestjs/swagger'
