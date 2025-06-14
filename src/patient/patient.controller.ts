@@ -5,7 +5,8 @@ import { UpdatePatientDto } from './dto/request/update-user-request.dto'
 import { Public } from 'src/decorators/request/public.decorator'
 import { ApiBearerAuth, ApiBody, ApiOkResponse, ApiOperation } from '@nestjs/swagger'
 import { CreatePatientDto } from './dto/request/create-patient-request.dto'
-import { ApiAuthResponses } from 'src/decorators/auth/apiAuthResponse.decorator'
+import { ApiStandardError } from 'src/decorators/swagger/error.decorator'
+import { ApiStandardResponse } from 'src/decorators/swagger/response.decorator'
 
 @Controller('patient')
 export class PatientController {
@@ -14,10 +15,8 @@ export class PatientController {
   @ApiBearerAuth('JWT-auth')
   @Put(':id')
   @ApiOperation({ summary: 'Update a patient by ID' })
-  @ApiOkResponse({
-    description: 'Patient updated successfully',
-    type: CreatePatientDto
-  })
+  @ApiStandardResponse(CreatePatientDto)
+  @ApiStandardError()
   @ApiBody({
     description: 'Patient data',
     type: CreatePatientDto
@@ -29,10 +28,8 @@ export class PatientController {
   @Public()
   @Get()
   @ApiOperation({ summary: 'Get all patients' })
-  @ApiOkResponse({
-    description: 'OK',
-    type: [CreatePatientDto]
-  })
+  @ApiStandardResponse(CreatePatientDto)
+  @ApiStandardError()
   async findAll(): Promise<Patient[]> {
     return this.patientService.findAll()
   }
@@ -40,10 +37,8 @@ export class PatientController {
   @ApiBearerAuth('JWT-auth')
   @Get(':id')
   @ApiOperation({ summary: 'Get patient by ID' })
-  @ApiOkResponse({
-    description: 'OK',
-    type: CreatePatientDto
-  })
+  @ApiStandardResponse(CreatePatientDto)
+  @ApiStandardError()
   async findById(@Param('id') id: string): Promise<Patient> {
     return this.patientService.findById(id)
   }
@@ -51,10 +46,8 @@ export class PatientController {
   @ApiBearerAuth('JWT-auth')
   @Get('identification/:identification')
   @ApiOperation({ summary: 'Get patient by identification' })
-  @ApiOkResponse({
-    description: 'OK',
-    type: CreatePatientDto
-  })
+  @ApiStandardResponse(CreatePatientDto)
+  @ApiStandardError()
   async findByIdentification(@Param('identification') identification: string): Promise<Patient> {
     return this.patientService.findByIdentification(identification)
   }
@@ -62,10 +55,8 @@ export class PatientController {
   @ApiBearerAuth('JWT-auth')
   @Get('age/:age')
   @ApiOperation({ summary: 'Get patients by age' })
-  @ApiOkResponse({
-    description: 'OK',
-    type: [CreatePatientDto]
-  })
+  @ApiStandardResponse(CreatePatientDto)
+  @ApiStandardError()
   async findByAge(@Param('age') age: number): Promise<Patient[]> {
     return this.patientService.findByAge(age)
   }
@@ -73,11 +64,8 @@ export class PatientController {
   @ApiBearerAuth('JWT-auth')
   @Get('firstname/:firstname')
   @ApiOperation({ summary: 'Get patients by firstname' })
-  @ApiOkResponse({
-    description: 'OK',
-    type: [CreatePatientDto]
-  })
-  @ApiAuthResponses()
+  @ApiStandardResponse(CreatePatientDto)
+  @ApiStandardError()
   async findByFirstname(@Param('firstname') firstname: string): Promise<Patient[]> {
     return this.patientService.findByFirstname(firstname)
   }
@@ -85,11 +73,8 @@ export class PatientController {
   @ApiBearerAuth('JWT-auth')
   @Get('lastname/:lastname')
   @ApiOperation({ summary: 'Get patients by lastname' })
-  @ApiOkResponse({
-    description: 'OK',
-    type: [CreatePatientDto]
-  })
-  @ApiAuthResponses()
+  @ApiStandardResponse(CreatePatientDto)
+  @ApiStandardError()
   async findByLastname(@Param('lastname') lastname: string): Promise<Patient[]> {
     return this.patientService.findByLastname(lastname)
   }

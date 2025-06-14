@@ -1,34 +1,33 @@
 import { applyDecorators, Type } from '@nestjs/common'
-import { ApiOkResponse, ApiCreatedResponse } from '@nestjs/swagger'
+import {
+  ApiOkResponse,
+  ApiCreatedResponse,
+  ApiNoContentResponse,
+  getSchemaPath
+} from '@nestjs/swagger'
 import { BaseResponseDto } from 'src/common/dto/base-response.dto'
-import { getSchemaPath } from '@nestjs/swagger'
 
-export function ApiStandardResponse<TModel extends Type<any>>(model: TModel, isCreated = false) {
-  return applyDecorators(
-    isCreated
-      ? ApiCreatedResponse({
-          schema: {
-            allOf: [
-              { $ref: getSchemaPath(BaseResponseDto) },
-              {
-                properties: {
-                  data: { $ref: getSchemaPath(model) }
-                }
-              }
-            ]
+export function ApiStandardResponse<TModel extends Type<any>>(model: TModel | null, status: 200 | 201 | 204 = 200) {
+  const schemaBase = {
+    allOf: [
+      { $ref: getSchemaPath(BaseResponseDto) },
+      model
+        ? {
+            properties: {
+              data: { $ref: getSchemaPath(model) }
+            }
           }
-        })
-      : ApiOkResponse({
-          schema: {
-            allOf: [
-              { $ref: getSchemaPath(BaseResponseDto) },
-              {
-                properties: {
-                  data: { $ref: getSchemaPath(model) }
-                }
-              }
-            ]
-          }
-        })
-  )
+        : {}
+    ]
+  }
+
+  const decorators = {
+    200: ApiOkResponse({ schema: schemaBase }),
+    201: ApiCreatedResponse({ schema: schemaBase }),
+    204: ApiNoContentResponse({
+      description: 'No content, but standardized response structure may still be used'
+    })
+  }
+
+  return applyDecorators(decorators[status])
 }

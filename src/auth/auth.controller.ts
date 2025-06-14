@@ -2,10 +2,11 @@ import { Body, Controller, Post } from '@nestjs/common'
 import { Public } from '../decorators/request/public.decorator'
 import { AuthService } from './auth.service'
 import { SignInDto } from './dto/request/signIn-auth-request.dto'
-import { ApiBadRequestResponse, ApiBody, ApiOkResponse, ApiOperation } from '@nestjs/swagger'
-import { ForgotPasswordResponseDto } from './dto/response/forgotPassword-auth-response.dto'
+import { ApiBody, ApiOperation } from '@nestjs/swagger'
 import { SignInResponseDto } from './dto/response/signIn-auth-response.dto'
 import { ForgotPasswordBodyDto } from './dto/request/forgotPassword-auth-request.dto'
+import { ApiStandardResponse } from 'src/decorators/swagger/response.decorator'
+import { ApiStandardError } from 'src/decorators/swagger/error.decorator'
 
 @Controller('auth')
 export class AuthController {
@@ -14,11 +15,8 @@ export class AuthController {
   @Public()
   @Post('signIn')
   @ApiOperation({ summary: 'Sign in a user' })
-  @ApiOkResponse({
-    description: 'User signed in successfully',
-    type: SignInResponseDto
-  })
-  @ApiBadRequestResponse({ description: 'Missing or invalid credentials' })
+  @ApiStandardResponse(SignInDto)
+  @ApiStandardError()
   @ApiBody({
     description: 'User credentials',
     type: SignInDto
@@ -30,10 +28,8 @@ export class AuthController {
   @Public()
   @Post('forgotpassword')
   @ApiOperation({ summary: 'Request a password reset' })
-  @ApiOkResponse({
-    description: 'Password reset email sent',
-    type: ForgotPasswordResponseDto
-  })
+  @ApiStandardResponse(SignInDto)
+  @ApiStandardError()
   @ApiBody({
     description: 'User email',
     type: ForgotPasswordBodyDto
