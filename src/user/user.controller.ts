@@ -50,15 +50,6 @@ export class UserController {
   }
 
   @ApiBearerAuth('JWT-auth')
-  @Delete(':id')
-  @ApiOperation({ summary: 'Delete user by ID' })
-  @ApiStandardResponse(CreateUserDto)
-  @ApiStandardError()
-  async deleteById(@Param('id') id: string): Promise<User> {
-    return this.userService.delete(id)
-  }
-
-  @ApiBearerAuth('JWT-auth')
   @Put(':id/password')
   @ApiOperation({ summary: 'Update user password' })
   @ApiStandardResponse(CreateUserDto)
@@ -66,5 +57,14 @@ export class UserController {
   @ApiBody({ description: 'New password', type: changePasswordResponseDto })
   async updatePassword(@Param('id') id: string, @Body('password') password: string) {
     return this.userService.updatePassword(id, password)
+  }
+
+  @ApiBearerAuth('JWT-auth')
+  @Delete(':id')
+  @ApiOperation({ summary: 'Delete user by ID' })
+  @ApiStandardResponse(CreateUserDto)
+  @ApiStandardError()
+  async deleteById(@Param('id') id: string): Promise<User> {
+    return this.userService.delete(id)
   }
 }

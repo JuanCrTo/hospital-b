@@ -12,19 +12,6 @@ import { ApiStandardResponse } from 'src/decorators/swagger/response.decorator'
 export class PatientController {
   constructor(private readonly patientService: PatientService) {}
 
-  @ApiBearerAuth('JWT-auth')
-  @Put(':id')
-  @ApiOperation({ summary: 'Update a patient by ID' })
-  @ApiStandardResponse(CreatePatientDto)
-  @ApiStandardError()
-  @ApiBody({
-    description: 'Patient data',
-    type: CreatePatientDto
-  })
-  async update(@Param('id') id: string, @Body() updatePatientDto: UpdatePatientDto): Promise<Patient> {
-    return this.patientService.update(id, updatePatientDto)
-  }
-
   @Public()
   @Get()
   @ApiOperation({ summary: 'Get all patients' })
@@ -77,5 +64,18 @@ export class PatientController {
   @ApiStandardError()
   async findByLastname(@Param('lastname') lastname: string): Promise<Patient[]> {
     return this.patientService.findByLastname(lastname)
+  }
+
+  @ApiBearerAuth('JWT-auth')
+  @Put(':id')
+  @ApiOperation({ summary: 'Update a patient by ID' })
+  @ApiStandardResponse(CreatePatientDto)
+  @ApiStandardError()
+  @ApiBody({
+    description: 'Patient data',
+    type: CreatePatientDto
+  })
+  async update(@Param('id') id: string, @Body() updatePatientDto: UpdatePatientDto): Promise<Patient> {
+    return this.patientService.update(id, updatePatientDto)
   }
 }
