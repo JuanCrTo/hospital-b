@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common'
+import { Body, Controller, HttpCode, Post } from '@nestjs/common'
 import { Public } from '../decorators/request/public.decorator'
 import { AuthService } from './auth.service'
 import { SignInDto } from './dto/request/signIn-auth-request.dto'
@@ -14,6 +14,7 @@ export class AuthController {
 
   @Public()
   @Post('signIn')
+  @HttpCode(201)
   @ApiOperation({ summary: 'Sign in a user' })
   @ApiStandardResponse(SignInDto)
   @ApiStandardError()
@@ -27,6 +28,7 @@ export class AuthController {
 
   @Public()
   @Post('forgotpassword')
+  @HttpCode(201)
   @ApiOperation({ summary: 'Request a password reset' })
   @ApiStandardResponse(SignInDto)
   @ApiStandardError()

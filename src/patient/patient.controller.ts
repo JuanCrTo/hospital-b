@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Put } from '@nestjs/common'
+import { Body, Controller, Get, HttpCode, Param, Put } from '@nestjs/common'
 import { PatientService } from './patient.service'
 import { Patient } from './model/patient.schema'
 import { UpdatePatientDto } from './dto/request/update-user-request.dto'
@@ -14,6 +14,7 @@ export class PatientController {
 
   @Public()
   @Get()
+  @HttpCode(200)
   @ApiOperation({ summary: 'Get all patients' })
   @ApiStandardResponse(CreatePatientDto)
   @ApiStandardError()
@@ -23,6 +24,7 @@ export class PatientController {
 
   @ApiBearerAuth('JWT-auth')
   @Get(':id')
+  @HttpCode(200)
   @ApiOperation({ summary: 'Get patient by ID' })
   @ApiStandardResponse(CreatePatientDto)
   @ApiStandardError()
@@ -32,6 +34,7 @@ export class PatientController {
 
   @ApiBearerAuth('JWT-auth')
   @Get('identification/:identification')
+  @HttpCode(200)
   @ApiOperation({ summary: 'Get patient by identification' })
   @ApiStandardResponse(CreatePatientDto)
   @ApiStandardError()
@@ -41,6 +44,7 @@ export class PatientController {
 
   @ApiBearerAuth('JWT-auth')
   @Get('age/:age')
+  @HttpCode(200)
   @ApiOperation({ summary: 'Get patients by age' })
   @ApiStandardResponse(CreatePatientDto)
   @ApiStandardError()
@@ -50,6 +54,7 @@ export class PatientController {
 
   @ApiBearerAuth('JWT-auth')
   @Get('firstname/:firstname')
+  @HttpCode(200)
   @ApiOperation({ summary: 'Get patients by firstname' })
   @ApiStandardResponse(CreatePatientDto)
   @ApiStandardError()
@@ -59,6 +64,7 @@ export class PatientController {
 
   @ApiBearerAuth('JWT-auth')
   @Get('lastname/:lastname')
+  @HttpCode(200)
   @ApiOperation({ summary: 'Get patients by lastname' })
   @ApiStandardResponse(CreatePatientDto)
   @ApiStandardError()
@@ -68,6 +74,7 @@ export class PatientController {
 
   @ApiBearerAuth('JWT-auth')
   @Put(':id')
+  @HttpCode(200)
   @ApiOperation({ summary: 'Update a patient by ID' })
   @ApiStandardResponse(CreatePatientDto)
   @ApiStandardError()

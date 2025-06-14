@@ -1,10 +1,5 @@
 import { applyDecorators, Type } from '@nestjs/common'
-import {
-  ApiOkResponse,
-  ApiCreatedResponse,
-  ApiNoContentResponse,
-  getSchemaPath
-} from '@nestjs/swagger'
+import { ApiOkResponse, ApiCreatedResponse, ApiNoContentResponse, getSchemaPath } from '@nestjs/swagger'
 import { BaseResponseDto } from 'src/common/dto/base-response.dto'
 
 export function ApiStandardResponse<TModel extends Type<any>>(model: TModel | null, status: 200 | 201 | 204 = 200) {
@@ -25,7 +20,17 @@ export function ApiStandardResponse<TModel extends Type<any>>(model: TModel | nu
     200: ApiOkResponse({ schema: schemaBase }),
     201: ApiCreatedResponse({ schema: schemaBase }),
     204: ApiNoContentResponse({
-      description: 'No content, but standardized response structure may still be used'
+      description: 'No content. Response body contains standard envelope with data = null',
+      schema: {
+        allOf: [
+          { $ref: getSchemaPath(BaseResponseDto) },
+          {
+            properties: {
+              data: { type: 'null', nullable: true }
+            }
+          }
+        ]
+      }
     })
   }
 

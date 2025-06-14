@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common'
+import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put } from '@nestjs/common'
 import { UserService } from './user.service'
 import { CreateUserDto } from './dto/request/create-user-request.dto'
 import { User } from './model/user.schema'
@@ -14,6 +14,7 @@ export class UserController {
 
   @Public()
   @Post()
+  @HttpCode(201)
   @ApiOperation({ summary: 'Create a new user' })
   @ApiStandardResponse(CreateUserDto)
   @ApiStandardError()
@@ -24,6 +25,7 @@ export class UserController {
 
   @ApiBearerAuth('JWT-auth')
   @Get(':id')
+  @HttpCode(200)
   @ApiOperation({ summary: 'Get user by ID' })
   @ApiStandardResponse(CreateUserDto)
   @ApiStandardError()
@@ -33,6 +35,7 @@ export class UserController {
 
   @ApiBearerAuth('JWT-auth')
   @Get('email/:email')
+  @HttpCode(200)
   @ApiOperation({ summary: 'Get user by email' })
   @ApiStandardResponse(CreateUserDto)
   @ApiStandardError()
@@ -42,6 +45,7 @@ export class UserController {
 
   @ApiBearerAuth('JWT-auth')
   @Get()
+  @HttpCode(200)
   @ApiOperation({ summary: 'Get all users' })
   @ApiStandardResponse(CreateUserDto)
   @ApiStandardError()
@@ -51,6 +55,7 @@ export class UserController {
 
   @ApiBearerAuth('JWT-auth')
   @Put(':id/password')
+  @HttpCode(200)
   @ApiOperation({ summary: 'Update user password' })
   @ApiStandardResponse(CreateUserDto)
   @ApiStandardError()
@@ -61,6 +66,7 @@ export class UserController {
 
   @ApiBearerAuth('JWT-auth')
   @Delete(':id')
+  @HttpCode(204)
   @ApiOperation({ summary: 'Delete user by ID' })
   @ApiStandardResponse(CreateUserDto)
   @ApiStandardError()
