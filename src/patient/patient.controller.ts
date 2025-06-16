@@ -16,7 +16,7 @@ export class PatientController {
   @Get()
   @HttpCode(200)
   @ApiOperation({ summary: 'Get all patients' })
-  @ApiStandardResponse(CreatePatientDto)
+  @ApiStandardResponse(CreatePatientDto, 200)
   @ApiStandardError()
   async findAll(): Promise<Patient[]> {
     return this.patientService.findAll()
@@ -26,7 +26,7 @@ export class PatientController {
   @Get(':id')
   @HttpCode(200)
   @ApiOperation({ summary: 'Get patient by ID' })
-  @ApiStandardResponse(CreatePatientDto)
+  @ApiStandardResponse(CreatePatientDto, 200)
   @ApiStandardError()
   async findById(@Param('id') id: string): Promise<Patient> {
     return this.patientService.findById(id)
@@ -36,7 +36,7 @@ export class PatientController {
   @Get('identification/:identification')
   @HttpCode(200)
   @ApiOperation({ summary: 'Get patient by identification' })
-  @ApiStandardResponse(CreatePatientDto)
+  @ApiStandardResponse(CreatePatientDto, 200)
   @ApiStandardError()
   async findByIdentification(@Param('identification') identification: string): Promise<Patient> {
     return this.patientService.findByIdentification(identification)
@@ -46,7 +46,7 @@ export class PatientController {
   @Get('age/:age')
   @HttpCode(200)
   @ApiOperation({ summary: 'Get patients by age' })
-  @ApiStandardResponse(CreatePatientDto)
+  @ApiStandardResponse(CreatePatientDto, 200)
   @ApiStandardError()
   async findByAge(@Param('age') age: number): Promise<Patient[]> {
     return this.patientService.findByAge(age)
@@ -56,7 +56,7 @@ export class PatientController {
   @Get('firstname/:firstname')
   @HttpCode(200)
   @ApiOperation({ summary: 'Get patients by firstname' })
-  @ApiStandardResponse(CreatePatientDto)
+  @ApiStandardResponse(CreatePatientDto, 200)
   @ApiStandardError()
   async findByFirstname(@Param('firstname') firstname: string): Promise<Patient[]> {
     return this.patientService.findByFirstname(firstname)
@@ -66,7 +66,7 @@ export class PatientController {
   @Get('lastname/:lastname')
   @HttpCode(200)
   @ApiOperation({ summary: 'Get patients by lastname' })
-  @ApiStandardResponse(CreatePatientDto)
+  @ApiStandardResponse(CreatePatientDto, 200)
   @ApiStandardError()
   async findByLastname(@Param('lastname') lastname: string): Promise<Patient[]> {
     return this.patientService.findByLastname(lastname)
@@ -76,7 +76,7 @@ export class PatientController {
   @Put(':id')
   @HttpCode(200)
   @ApiOperation({ summary: 'Update a patient by ID' })
-  @ApiStandardResponse(CreatePatientDto)
+  @ApiStandardResponse(CreatePatientDto, 200)
   @ApiStandardError()
   @ApiBody({
     description: 'Patient data',

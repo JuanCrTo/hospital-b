@@ -16,7 +16,7 @@ export class AuthController {
   @Post('signIn')
   @HttpCode(201)
   @ApiOperation({ summary: 'Sign in a user' })
-  @ApiStandardResponse(SignInDto)
+  @ApiStandardResponse(SignInDto, 201)
   @ApiStandardError()
   @ApiBody({
     description: 'User credentials',
@@ -30,7 +30,7 @@ export class AuthController {
   @Post('forgotpassword')
   @HttpCode(201)
   @ApiOperation({ summary: 'Request a password reset' })
-  @ApiStandardResponse(SignInDto)
+  @ApiStandardResponse(SignInDto, 201)
   @ApiStandardError()
   @ApiBody({
     description: 'User email',

@@ -16,7 +16,7 @@ export class UserController {
   @Post()
   @HttpCode(201)
   @ApiOperation({ summary: 'Create a new user' })
-  @ApiStandardResponse(CreateUserDto)
+  @ApiStandardResponse(CreateUserDto, 201)
   @ApiStandardError()
   @ApiBody({ description: 'User data', type: CreateUserDto })
   async createUser(@Body() createUserDto: CreateUserDto): Promise<User> {
@@ -27,7 +27,7 @@ export class UserController {
   @Get(':id')
   @HttpCode(200)
   @ApiOperation({ summary: 'Get user by ID' })
-  @ApiStandardResponse(CreateUserDto)
+  @ApiStandardResponse(CreateUserDto, 200)
   @ApiStandardError()
   async findUserById(@Param('id') id: string): Promise<User> {
     return this.userService.findById(id)
@@ -37,7 +37,7 @@ export class UserController {
   @Get('email/:email')
   @HttpCode(200)
   @ApiOperation({ summary: 'Get user by email' })
-  @ApiStandardResponse(CreateUserDto)
+  @ApiStandardResponse(CreateUserDto, 200)
   @ApiStandardError()
   async findUserByEmail(@Param('email') email: string): Promise<User> {
     return this.userService.findByEmail(email)
@@ -47,7 +47,7 @@ export class UserController {
   @Get()
   @HttpCode(200)
   @ApiOperation({ summary: 'Get all users' })
-  @ApiStandardResponse(CreateUserDto)
+  @ApiStandardResponse(CreateUserDto, 200)
   @ApiStandardError()
   async findAll(): Promise<User[]> {
     return this.userService.findAll()
@@ -57,7 +57,7 @@ export class UserController {
   @Put(':id/password')
   @HttpCode(200)
   @ApiOperation({ summary: 'Update user password' })
-  @ApiStandardResponse(CreateUserDto)
+  @ApiStandardResponse(CreateUserDto, 200)
   @ApiStandardError()
   @ApiBody({ description: 'New password', type: changePasswordResponseDto })
   async updatePassword(@Param('id') id: string, @Body('password') password: string) {
@@ -68,7 +68,7 @@ export class UserController {
   @Delete(':id')
   @HttpCode(204)
   @ApiOperation({ summary: 'Delete user by ID' })
-  @ApiStandardResponse(CreateUserDto)
+  @ApiStandardResponse(CreateUserDto, 204)
   @ApiStandardError()
   async deleteById(@Param('id') id: string): Promise<User> {
     return this.userService.delete(id)
