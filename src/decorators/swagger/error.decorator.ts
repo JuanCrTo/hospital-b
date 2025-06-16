@@ -7,16 +7,16 @@ import {
   ApiInternalServerErrorResponse,
   ApiConflictResponse
 } from '@nestjs/swagger'
-import { BaseResponseDto } from 'src/common/dto/base-response.dto'
+import { ErrorDto } from 'src/common/dto/error.dto'
 
 export function ApiStandardError() {
   return applyDecorators(
-    ApiBadRequestResponse({ description: 'Petición incorrecta', type: BaseResponseDto }),
-    ApiUnauthorizedResponse({ description: 'No autenticado', type: BaseResponseDto }),
-    ApiForbiddenResponse({ description: 'No autorizado', type: BaseResponseDto }),
-    ApiNotFoundResponse({ description: 'Recurso no encontrado', type: BaseResponseDto }),
-    ApiConflictResponse({ description: 'Conflicto', type: BaseResponseDto }),
-    // !@ApiTooManyRequestsResponse({ description: 'Demasiadas peticiones', type: BaseResponseDto }),
-    ApiInternalServerErrorResponse({ description: 'Error interno', type: BaseResponseDto })
+    ApiBadRequestResponse({ description: 'Petición incorrecta', type: ErrorDto }),
+    ApiUnauthorizedResponse({ description: 'No autenticado', type: ErrorDto }),
+    ApiForbiddenResponse({ description: 'No autorizado', type: ErrorDto }),
+    ApiNotFoundResponse({ description: 'Recurso no encontrado', type: ErrorDto }),
+    ApiConflictResponse({ description: 'Conflicto', type: ErrorDto }),
+    // !@ApiTooManyRequestsResponse({ description: 'Demasiadas peticiones', type: ErrorDto }),
+    ApiInternalServerErrorResponse({ description: 'Error interno', type: ErrorDto })
   )
 }

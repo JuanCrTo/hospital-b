@@ -1,6 +1,6 @@
 import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus } from '@nestjs/common'
 import { Request, Response } from 'express'
-import { v4 as uuidv4 } from 'uuid'
+// import { v4 as uuidv4 } from 'uuid'
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
@@ -9,7 +9,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>()
     const request = ctx.getRequest<Request>()
 
-    const traceId = uuidv4()
+    // const traceId = uuidv4()
     const timestamp = new Date().toISOString()
     const path = request.url
 
@@ -20,7 +20,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const message =
       errorResponse && typeof errorResponse === 'object' && 'message' in errorResponse ? (errorResponse as any).message : 'Error interno del servidor'
 
-    const stack = exception instanceof Error ? exception.stack : null
+    // const stack = exception instanceof Error ? exception.stack : null
 
     const responseBody = {
       timestamp,
@@ -29,10 +29,10 @@ export class AllExceptionsFilter implements ExceptionFilter {
       statusCode: status,
       errorCode: (errorResponse as any)?.errorCode ?? 'INTERNAL_ERROR',
       path,
-      stack,
-      details: null,
+      // stack,
+      // details: null,
       data: null,
-      traceId
+      // traceId
     }
 
     response.status(status).json(responseBody)
