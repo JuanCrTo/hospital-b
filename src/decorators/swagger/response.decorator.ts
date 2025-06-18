@@ -19,7 +19,6 @@ export function ApiStandardResponse<TModel extends Type<any>>(model: TModel | nu
   const exampleData = model
   ? {
       email: 'user@example.com',
-      password: '1234Ab#',
       role: 'patient',
       patientDetails: {
         identification: '1234567890',

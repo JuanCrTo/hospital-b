@@ -7,6 +7,7 @@ import { ApiBearerAuth, ApiBody, ApiNoContentResponse, ApiOperation } from '@nes
 import { changePasswordResponseDto } from './dto/response/changePassword-user-response.dto'
 import { ApiStandardResponse } from 'src/decorators/swagger/response.decorator'
 import { ApiStandardError } from 'src/decorators/swagger/error.decorator'
+import { UserResponseDto } from './dto/response/user-response.dto'
 
 @Controller('user')
 export class UserController {
@@ -19,7 +20,7 @@ export class UserController {
   @ApiStandardResponse(CreateUserDto, 201)
   @ApiStandardError()
   @ApiBody({ description: 'User data', type: CreateUserDto })
-  async createUser(@Body() createUserDto: CreateUserDto): Promise<User> {
+  async createUser(@Body() createUserDto: CreateUserDto): Promise<UserResponseDto> {
     return this.userService.create(createUserDto)
   }
 

@@ -20,7 +20,7 @@ export class ResponseDto<T = any> {
   // @ApiProperty({ nullable: true, required: false })
   // details?: string | null // ? message para admin y superadmin
 
-  @ApiProperty({ nullable: true })
+  @ApiProperty({ type: () => Object })
   data: T
 
   // @ApiProperty({ example: '97af134e-bab9-4e13-b9c1-f10dbe56cf92', required: false })

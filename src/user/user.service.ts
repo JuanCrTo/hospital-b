@@ -9,6 +9,7 @@ import { PatientService } from 'src/patient/patient.service'
 import { USER_ROLES } from './enums/user-role.enum'
 import { CreatePatientDto } from 'src/patient/dto/request/create-patient-request.dto'
 import { EmailService } from 'src/email/email.service'
+import { UserResponseDto } from './dto/response/user-response.dto'
 
 @Injectable()
 export class UserService {
@@ -19,19 +20,19 @@ export class UserService {
   ) {}
 
   // create
-  async create(createUserDto: CreateUserDto): Promise<User> {
+  async create(createUserDto: CreateUserDto): Promise<UserResponseDto> {
     const hashedPassword = await hashPassword(createUserDto.password)
-
     createUserDto.password = hashedPassword
 
     const user = await this.userModel.create(createUserDto)
 
+    let patientDetails = undefined
     if (createUserDto.role === 'patient' && createUserDto.patientDetails) {
       const createPatientDto: CreatePatientDto & { userId: string } = {
         ...createUserDto.patientDetails,
         userId: user._id.toString()
       }
-
+      patientDetails = createUserDto.patientDetails
       await this.patientService.create(createPatientDto)
     }
 
@@ -58,7 +59,11 @@ export class UserService {
     // Enviar correo de bienvenida
     await this.emailService.sendEmailWelcome(user._id.toString())
 
-    return user
+    return {
+      email: user.email,
+      role: user.role,
+      patientDetails: patientDetails
+    }
   }
 
   // findOneById

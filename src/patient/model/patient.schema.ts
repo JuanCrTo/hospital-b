@@ -32,13 +32,13 @@ export class Patient {
   @Prop({ required: true })
   clinicalage: string;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   location?: string;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   latitude?: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   longitude?: number;
 
   @Prop({
