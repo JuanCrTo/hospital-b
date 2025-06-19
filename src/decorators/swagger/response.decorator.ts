@@ -1,8 +1,55 @@
 import { applyDecorators, Type } from '@nestjs/common'
-import { ApiOkResponse, ApiCreatedResponse, ApiNoContentResponse, getSchemaPath, ApiExtraModels } from '@nestjs/swagger'
+import { 
+  ApiOkResponse, 
+  ApiCreatedResponse, 
+  ApiNoContentResponse, 
+  getSchemaPath, 
+  ApiExtraModels 
+} from '@nestjs/swagger'
 import { ResponseDto } from 'src/common/dto/response.dto'
 
-export function ApiStandardResponse<TModel extends Type<any>>(model: TModel | null, status: 200 | 201 | 204 = 200) {
+// Función auxiliar para extraer el ejemplo del modelo
+function extractModelExample<TModel extends Type<any>>(model: TModel): any {
+  if (!model) return undefined
+
+  const instance = new model()
+  const prototype = Object.getPrototypeOf(instance)
+  const example: any = {}
+
+  // Obtener todas las propiedades del modelo incluyendo las heredadas
+  const propertyNames = new Set<string>()
+  
+  // Propiedades de la instancia
+  Object.getOwnPropertyNames(instance).forEach(prop => propertyNames.add(prop))
+  
+  // Propiedades del prototipo (decoradores de Swagger)
+  let currentPrototype = prototype
+  while (currentPrototype && currentPrototype !== Object.prototype) {
+    Object.getOwnPropertyNames(currentPrototype).forEach(prop => {
+      if (prop !== 'constructor') {
+        propertyNames.add(prop)
+      }
+    })
+    currentPrototype = Object.getPrototypeOf(currentPrototype)
+  }
+
+  // Extraer ejemplos de los metadatos de Swagger
+  propertyNames.forEach(propertyKey => {
+    const propertyMetadata = Reflect.getMetadata('swagger/apiModelProperties', instance, propertyKey)
+    if (propertyMetadata?.example !== undefined) {
+      example[propertyKey] = propertyMetadata.example
+    }
+  })
+
+  return Object.keys(example).length > 0 ? example : undefined
+}
+
+export function ApiStandardResponse<TModel extends Type<any>>(
+  model: TModel | null,
+  status: 200 | 201 | 204 = 200
+) {
+  const modelExample = model ? extractModelExample(model) : undefined
+  
   const schemaBase = {
     allOf: [
       { $ref: getSchemaPath(ResponseDto) },
@@ -16,33 +63,23 @@ export function ApiStandardResponse<TModel extends Type<any>>(model: TModel | nu
     ]
   }
 
-  const exampleData = model
-  ? {
-      email: 'user@example.com',
-      role: 'patient',
-      patientDetails: {
-        identification: '1234567890',
-        firstname: 'John',
-        middlename: 'Doe',
-        lastname: 'Smith',
-        secondlastname: 'Johnson',
-        birth: '1990-01-01',
-        location: 'apex las vegas'
-      }
-    }
-  : null
-
-  const exampleSuccess = {
-    timestamp: '2025-06-12T20:13:00.000Z',
+  const createExampleResponse = (statusCode: number, data?: any) => ({
+    timestamp: new Date().toISOString(),
     message: 'Operación realizada con éxito',
     success: true,
-    statusCode: status,
-    data: exampleData
-  }
+    statusCode,
+    data: data !== undefined ? data : (statusCode === 204 ? null : undefined)
+  })
 
   const decorators = {
-    200: ApiOkResponse({ schema: schemaBase, example: exampleSuccess }),
-    201: ApiCreatedResponse({ schema: schemaBase, example: exampleSuccess }),
+    200: ApiOkResponse({ 
+      schema: schemaBase, 
+      ...(modelExample ? { example: createExampleResponse(200, modelExample) } : {})
+    }),
+    201: ApiCreatedResponse({ 
+      schema: schemaBase, 
+      ...(modelExample ? { example: createExampleResponse(201, modelExample) } : {})
+    }),
     204: ApiNoContentResponse({
       description: 'No content. Response body contains standard envelope with data = null',
       schema: {
@@ -55,15 +92,15 @@ export function ApiStandardResponse<TModel extends Type<any>>(model: TModel | nu
           }
         ]
       },
-      example: {
-        timestamp: '2025-06-12T20:13:00.000Z',
-        message: 'Operación realizada con éxito',
-        success: true,
-        statusCode: 204,
-        data: null
-      }
+      example: createExampleResponse(204, null)
     })
   }
 
-  return applyDecorators(ApiExtraModels(ResponseDto), decorators[status])
+  // Agregar modelos extra dinámicamente
+  const extraModels = [ResponseDto]
+  if (model) {
+    extraModels.push(model)
+  }
+
+  return applyDecorators(ApiExtraModels(...extraModels), decorators[status])
 }

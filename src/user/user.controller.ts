@@ -30,7 +30,7 @@ export class UserController {
   @ApiOperation({ summary: 'Get user by ID' })
   @ApiStandardResponse(CreateUserDto, 200)
   @ApiStandardError()
-  async findUserById(@Param('id') id: string): Promise<User> {
+  async findUserById(@Param('id') id: string): Promise<CreateUserDto> {
     return this.userService.findById(id)
   }
 
