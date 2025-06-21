@@ -7,6 +7,7 @@ import { ApiBearerAuth, ApiBody, ApiOkResponse, ApiOperation } from '@nestjs/swa
 import { CreatePatientDto } from './dto/request/create-patient-request.dto'
 import { ApiStandardError } from 'src/decorators/swagger/error.decorator'
 import { ApiStandardResponse } from 'src/decorators/swagger/response.decorator'
+import { PatientResponseDto } from './dto/response/patient-response.dto'
 
 @Controller('patient')
 export class PatientController {
@@ -16,9 +17,9 @@ export class PatientController {
   @Get()
   @HttpCode(200)
   @ApiOperation({ summary: 'Get all patients' })
-  @ApiStandardResponse(CreatePatientDto, 200)
+  @ApiStandardResponse(PatientResponseDto, 200)
   @ApiStandardError()
-  async findAll(): Promise<Patient[]> {
+  async findAll(): Promise<PatientResponseDto[]> {
     return this.patientService.findAll()
   }
 
@@ -26,9 +27,9 @@ export class PatientController {
   @Get(':id')
   @HttpCode(200)
   @ApiOperation({ summary: 'Get patient by ID' })
-  @ApiStandardResponse(CreatePatientDto, 200)
+  @ApiStandardResponse(PatientResponseDto, 200)
   @ApiStandardError()
-  async findById(@Param('id') id: string): Promise<Patient> {
+  async findById(@Param('id') id: string): Promise<PatientResponseDto> {
     return this.patientService.findById(id)
   }
 
@@ -36,9 +37,9 @@ export class PatientController {
   @Get('identification/:identification')
   @HttpCode(200)
   @ApiOperation({ summary: 'Get patient by identification' })
-  @ApiStandardResponse(CreatePatientDto, 200)
+  @ApiStandardResponse(PatientResponseDto, 200)
   @ApiStandardError()
-  async findByIdentification(@Param('identification') identification: string): Promise<Patient> {
+  async findByIdentification(@Param('identification') identification: string): Promise<PatientResponseDto> {
     return this.patientService.findByIdentification(identification)
   }
 
@@ -46,9 +47,9 @@ export class PatientController {
   @Get('age/:age')
   @HttpCode(200)
   @ApiOperation({ summary: 'Get patients by age' })
-  @ApiStandardResponse(CreatePatientDto, 200)
+  @ApiStandardResponse(PatientResponseDto, 200)
   @ApiStandardError()
-  async findByAge(@Param('age') age: number): Promise<Patient[]> {
+  async findByAge(@Param('age') age: number): Promise<PatientResponseDto[]> {
     return this.patientService.findByAge(age)
   }
 
@@ -56,9 +57,9 @@ export class PatientController {
   @Get('firstname/:firstname')
   @HttpCode(200)
   @ApiOperation({ summary: 'Get patients by firstname' })
-  @ApiStandardResponse(CreatePatientDto, 200)
+  @ApiStandardResponse(PatientResponseDto, 200)
   @ApiStandardError()
-  async findByFirstname(@Param('firstname') firstname: string): Promise<Patient[]> {
+  async findByFirstname(@Param('firstname') firstname: string): Promise<PatientResponseDto[]> {
     return this.patientService.findByFirstname(firstname)
   }
 
@@ -66,9 +67,9 @@ export class PatientController {
   @Get('lastname/:lastname')
   @HttpCode(200)
   @ApiOperation({ summary: 'Get patients by lastname' })
-  @ApiStandardResponse(CreatePatientDto, 200)
+  @ApiStandardResponse(PatientResponseDto, 200)
   @ApiStandardError()
-  async findByLastname(@Param('lastname') lastname: string): Promise<Patient[]> {
+  async findByLastname(@Param('lastname') lastname: string): Promise<PatientResponseDto[]> {
     return this.patientService.findByLastname(lastname)
   }
 
@@ -76,13 +77,13 @@ export class PatientController {
   @Put(':id')
   @HttpCode(200)
   @ApiOperation({ summary: 'Update a patient by ID' })
-  @ApiStandardResponse(CreatePatientDto, 200)
+  @ApiStandardResponse(PatientResponseDto, 200)
   @ApiStandardError()
   @ApiBody({
     description: 'Patient data',
     type: CreatePatientDto
   })
-  async update(@Param('id') id: string, @Body() updatePatientDto: UpdatePatientDto): Promise<Patient> {
+  async update(@Param('id') id: string, @Body() updatePatientDto: UpdatePatientDto): Promise<PatientResponseDto> {
     return this.patientService.update(id, updatePatientDto)
   }
 }

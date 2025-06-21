@@ -9,7 +9,9 @@ import { PatientService } from 'src/patient/patient.service'
 import { USER_ROLES } from './enums/user-role.enum'
 import { CreatePatientDto } from 'src/patient/dto/request/create-patient-request.dto'
 import { EmailService } from 'src/email/email.service'
-import { UserResponseDto } from './dto/response/user-response.dto'
+import { UserDetailsResponseDto } from './dto/response/user-details-response.dto'
+import { UserResumenResponseDto } from './dto/response/user-resumen-response.dto'
+import { Patient } from 'src/patient/model/patient.schema'
 
 @Injectable()
 export class UserService {
@@ -20,7 +22,7 @@ export class UserService {
   ) {}
 
   // create
-  async create(createUserDto: CreateUserDto): Promise<UserResponseDto> {
+  async create(createUserDto: CreateUserDto): Promise<UserDetailsResponseDto> {
     const hashedPassword = await hashPassword(createUserDto.password)
     createUserDto.password = hashedPassword
 
@@ -32,8 +34,8 @@ export class UserService {
         ...createUserDto.patientDetails,
         userId: user._id.toString()
       }
-      patientDetails = createUserDto.patientDetails
       await this.patientService.create(createPatientDto)
+      patientDetails = await this.patientService.findByUserId(user._id.toString())
     }
 
     // *Doctor
@@ -67,8 +69,26 @@ export class UserService {
   }
 
   // findOneById
-  async findById(id: string): Promise<User> {
-    return this.userModel.findById(id).select('-_id -password').lean()
+  async findById(id: string): Promise<UserDetailsResponseDto> {
+    const user = await this.userModel.findById(id).select('-_id -password').lean()
+    if (!user) return null
+
+    let patientDetails = undefined
+    if (user.role === 'patient') {
+      const patient = await this.patientService.findByUserId(id)
+      if (patient) {
+        type PatientWithTimestamps = Patient & { createdAt?: Date; updatedAt?: Date; userId?: string }
+
+        const { userId, createdAt, updatedAt, ...rest } = patient as PatientWithTimestamps
+        patientDetails = rest
+      }
+    }
+
+    return {
+      email: user.email,
+      role: user.role,
+      patientDetails
+    }
   }
 
   // findByEmail
@@ -77,7 +97,7 @@ export class UserService {
   }
 
   // findAll
-  async findAll(): Promise<User[]> {
+  async findAll(): Promise<UserResumenResponseDto[]> {
     return this.userModel.find().select('-_id -password').lean()
   }
 
@@ -104,7 +124,7 @@ export class UserService {
   }
 
   // updatePassword
-  async updatePassword(id: string, password: string): Promise<User> {
+  async updatePassword(id: string, password: string): Promise<UserResumenResponseDto> {
     const hashedPassword = await hashPassword(password)
     return this.userModel.findByIdAndUpdate(id, { password: hashedPassword }).select('-_id -password').lean()
   }

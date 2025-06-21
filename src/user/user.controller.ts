@@ -7,7 +7,8 @@ import { ApiBearerAuth, ApiBody, ApiNoContentResponse, ApiOperation } from '@nes
 import { changePasswordResponseDto } from './dto/response/changePassword-user-response.dto'
 import { ApiStandardResponse } from 'src/decorators/swagger/response.decorator'
 import { ApiStandardError } from 'src/decorators/swagger/error.decorator'
-import { UserResponseDto } from './dto/response/user-response.dto'
+import { UserDetailsResponseDto } from './dto/response/user-details-response.dto'
+import { UserResumenResponseDto } from './dto/response/user-resumen-response.dto'
 
 @Controller('user')
 export class UserController {
@@ -17,10 +18,10 @@ export class UserController {
   @Post()
   @HttpCode(201)
   @ApiOperation({ summary: 'Create a new user' })
-  @ApiStandardResponse(CreateUserDto, 201)
+  @ApiStandardResponse(UserDetailsResponseDto, 201)
   @ApiStandardError()
   @ApiBody({ description: 'User data', type: CreateUserDto })
-  async createUser(@Body() createUserDto: CreateUserDto): Promise<UserResponseDto> {
+  async createUser(@Body() createUserDto: CreateUserDto): Promise<UserDetailsResponseDto> {
     return this.userService.create(createUserDto)
   }
 
@@ -28,9 +29,9 @@ export class UserController {
   @Get(':id')
   @HttpCode(200)
   @ApiOperation({ summary: 'Get user by ID' })
-  @ApiStandardResponse(CreateUserDto, 200)
+  @ApiStandardResponse(UserDetailsResponseDto, 200)
   @ApiStandardError()
-  async findUserById(@Param('id') id: string): Promise<CreateUserDto> {
+  async findUserById(@Param('id') id: string): Promise<UserDetailsResponseDto> {
     return this.userService.findById(id)
   }
 
@@ -38,9 +39,9 @@ export class UserController {
   @Get('email/:email')
   @HttpCode(200)
   @ApiOperation({ summary: 'Get user by email' })
-  @ApiStandardResponse(CreateUserDto, 200)
+  @ApiStandardResponse(UserDetailsResponseDto, 200)
   @ApiStandardError()
-  async findUserByEmail(@Param('email') email: string): Promise<User> {
+  async findUserByEmail(@Param('email') email: string): Promise<UserDetailsResponseDto> {
     return this.userService.findByEmail(email)
   }
 
@@ -48,9 +49,9 @@ export class UserController {
   @Get()
   @HttpCode(200)
   @ApiOperation({ summary: 'Get all users' })
-  @ApiStandardResponse(CreateUserDto, 200)
+  @ApiStandardResponse(UserResumenResponseDto, 200)
   @ApiStandardError()
-  async findAll(): Promise<User[]> {
+  async findAll(): Promise<UserResumenResponseDto[]> {
     return this.userService.findAll()
   }
 
@@ -58,10 +59,10 @@ export class UserController {
   @Put(':id/password')
   @HttpCode(200)
   @ApiOperation({ summary: 'Update user password' })
-  @ApiStandardResponse(CreateUserDto, 200)
+  @ApiStandardResponse(UserResumenResponseDto, 200)
   @ApiStandardError()
   @ApiBody({ description: 'New password', type: changePasswordResponseDto })
-  async updatePassword(@Param('id') id: string, @Body('password') password: string) {
+  async updatePassword(@Param('id') id: string, @Body('password') password: string): Promise<UserResumenResponseDto> {
     return this.userService.updatePassword(id, password)
   }
 
