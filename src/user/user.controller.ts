@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put } from '@nestjs/common'
+import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put, NotFoundException } from '@nestjs/common'
 import { UserService } from './user.service'
 import { CreateUserDto } from './dto/request/create-user-request.dto'
 import { User } from './model/user.schema'
@@ -42,7 +42,11 @@ export class UserController {
   @ApiStandardResponse(UserDetailsResponseDto, 200)
   @ApiStandardError()
   async findUserByEmail(@Param('email') email: string): Promise<UserDetailsResponseDto> {
-    return this.userService.findByEmail(email)
+    const user = await this.userService.findByEmailDto(email)
+    if (!user) {
+      throw new NotFoundException(`Usuario con email ${email} no encontrado`)
+    }
+    return user
   }
 
   @ApiBearerAuth('JWT-auth')
@@ -70,9 +74,9 @@ export class UserController {
   @Delete(':id')
   @HttpCode(204)
   @ApiOperation({ summary: 'Delete user by ID' })
-  @ApiStandardResponse(CreateUserDto, 204)
+  @ApiStandardResponse(null, 204)
   @ApiStandardError()
-  async deleteById(@Param('id') id: string): Promise<User> {
+  async deleteById(@Param('id') id: string): Promise<void> {
     return this.userService.delete(id)
   }
 }

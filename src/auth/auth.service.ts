@@ -18,7 +18,7 @@ export class AuthService {
   ) {}
 
   async signIn(email: string, password: string): Promise<SignInResponseDto> {
-    const user = await this.userService.findByEmail(email)
+    const user = await this.userService.findByEmailRaw(email)
     if (!user) throw new UnauthorizedException()
 
     const isPasswordValid = await comparePassword(password, user.password)
@@ -37,7 +37,7 @@ export class AuthService {
 
   // Verify if the email is exist in the database (User Service findByEmail), generate a token (Auth Service generateResetTokenJWT), create a unique link with the token and send the email to the user (Email Service forgotpassword)
   async handleForgotPassword(email: string) {
-    const user = await this.userService.findByEmail(email)
+    const user = await this.userService.findByEmailRaw(email)
 
     if (!user) {
       throw new NotFoundException('Usuario no encontrado')

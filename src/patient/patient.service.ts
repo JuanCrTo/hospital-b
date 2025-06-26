@@ -5,16 +5,18 @@ import { Model } from 'mongoose'
 import { CreatePatientDto } from './dto/request/create-patient-request.dto'
 import { UpdatePatientDto } from './dto/request/update-user-request.dto'
 import { addLocationToHistory, calculateAge, calculateClinicalAge, getCoordinatesFromLocation } from 'src/utils/utils'
+import { PatientResponseDto } from './dto/response/patient-response.dto'
+import { mapPatientToDto } from './mapper/patient-response.mapper'
 
 @Injectable()
 export class PatientService {
   constructor(@InjectModel(Patient.name) private readonly patientModel: Model<Patient>) {}
 
   // create
-  async create(createPatientDto: CreatePatientDto): Promise<Patient> {
+  async create(createPatientDto: CreatePatientDto): Promise<void> {
     const { location } = createPatientDto
-    let latitude: number | undefined
-    let longitude: number | undefined
+    let latitude: number
+    let longitude: number
 
     if (location) {
       const coords = await getCoordinatesFromLocation(location)
@@ -33,11 +35,11 @@ export class PatientService {
       longitude
     }
 
-    return this.patientModel.create(patientWithCalculatedData)
+    await this.patientModel.create(patientWithCalculatedData)
   }
 
   // update
-  async update(id: string, patient: UpdatePatientDto): Promise<Patient> {
+  async update(id: string, patient: UpdatePatientDto): Promise<PatientResponseDto> {
     const updateData: any = { ...patient }
 
     if (updateData.birth) {
@@ -71,13 +73,15 @@ export class PatientService {
   }
 
   // findAll
-  async findAll(): Promise<Patient[]> {
-    return this.patientModel.find().select('-_id').lean()
+  async findAll(): Promise<PatientResponseDto[]> {
+    const patients = await this.patientModel.find().select('-_id').lean()
+    return patients.map(mapPatientToDto)
   }
 
   // findById
-  async findById(id: string): Promise<Patient> {
-    return this.patientModel.findById(id).select('-_id').lean()
+  async findById(id: string): Promise<PatientResponseDto> {
+    const patient = await this.patientModel.findById(id).select('-_id').lean()
+    return mapPatientToDto(patient)
   }
 
   // findByUserId
@@ -86,23 +90,27 @@ export class PatientService {
   }
 
   // findByIdentification
-  async findByIdentification(identification: string): Promise<Patient> {
-    return this.patientModel.findOne({ identification }).select('-_id').lean()
+  async findByIdentification(identification: string): Promise<PatientResponseDto> {
+    const patient = await this.patientModel.findOne({ identification }).select('-_id').lean()
+    return mapPatientToDto(patient)
   }
 
   // findByAge
-  async findByAge(age: number): Promise<Patient[]> {
-    return this.patientModel.find({ age }).select('-_id').lean()
+  async findByAge(age: number): Promise<PatientResponseDto[]> {
+    const patients = await this.patientModel.find({ age }).select('-_id').lean()
+    return patients.map(mapPatientToDto)
   }
 
   // findByFirstname
-  async findByFirstname(firstname: string): Promise<Patient[]> {
-    return this.patientModel.find({ firstname }).select('-_id').lean()
+  async findByFirstname(firstname: string): Promise<PatientResponseDto[]> {
+    const patients = await this.patientModel.find({ firstname }).select('-_id').lean()
+    return patients.map(mapPatientToDto)
   }
 
   // findByLastname
-  async findByLastname(lastname: string): Promise<Patient[]> {
-    return this.patientModel.find({ lastname }).select('-_id').lean()
+  async findByLastname(lastname: string): Promise<PatientResponseDto[]> {
+    const patients = await this.patientModel.find({ lastname }).select('-_id').lean()
+    return patients.map(mapPatientToDto)
   }
 
   // getUserByPatientId

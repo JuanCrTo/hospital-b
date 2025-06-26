@@ -4,14 +4,16 @@ import { Model } from 'mongoose'
 import { CreateUserDto } from './dto/request/create-user-request.dto'
 import { User } from './model/user.schema'
 import { hashPassword } from 'src/utils/utils'
-import { IUser } from './interfaces/user.interface'
 import { PatientService } from 'src/patient/patient.service'
 import { USER_ROLES } from './enums/user-role.enum'
 import { CreatePatientDto } from 'src/patient/dto/request/create-patient-request.dto'
 import { EmailService } from 'src/email/email.service'
 import { UserDetailsResponseDto } from './dto/response/user-details-response.dto'
 import { UserResumenResponseDto } from './dto/response/user-resumen-response.dto'
-import { Patient } from 'src/patient/model/patient.schema'
+import { mapUserDetailsToDto } from './mapper/user-details-response.mapper'
+import { mapUserResumenToDto } from './mapper/user-resumen-response.mapper'
+import { mapPatientToDto } from 'src/patient/mapper/patient-response.mapper'
+import { IUser } from './interfaces/user.interface'
 
 @Injectable()
 export class UserService {
@@ -35,37 +37,18 @@ export class UserService {
         userId: user._id.toString()
       }
       await this.patientService.create(createPatientDto)
-      patientDetails = await this.patientService.findByUserId(user._id.toString())
+      const patient = await this.patientService.findByUserId(user._id.toString())
+      patientDetails = mapPatientToDto(patient)
     }
-
-    // *Doctor
-    // if (createUserDto.role === 'patient' && createUserDto.patientDetails) {
-    //   const createPatientDto: CreatePatientDto & { userId: string } = {
-    //     ...createUserDto.patientDetails,
-    //     userId: user._id.toString(),
-    //   };
-
-    //   await this.patientService.create(createPatientDto);
-    // }
-
-    // *Nurse
-    // if (createUserDto.role === 'patient' && createUserDto.patientDetails) {
-    //   const createPatientDto: CreatePatientDto & { userId: string } = {
-    //     ...createUserDto.patientDetails,
-    //     userId: user._id.toString(),
-    //   };
-
-    //   await this.patientService.create(createPatientDto);
-    // }
 
     // Enviar correo de bienvenida
     await this.emailService.sendEmailWelcome(user._id.toString())
 
-    return {
+    return mapUserDetailsToDto({
       email: user.email,
       role: user.role,
-      patientDetails: patientDetails
-    }
+      patientDetails
+    })
   }
 
   // findOneById
@@ -77,35 +60,52 @@ export class UserService {
     if (user.role === 'patient') {
       const patient = await this.patientService.findByUserId(id)
       if (patient) {
-        type PatientWithTimestamps = Patient & { createdAt?: Date; updatedAt?: Date; userId?: string }
-
-        const { userId, createdAt, updatedAt, ...rest } = patient as PatientWithTimestamps
-        patientDetails = rest
+        patientDetails = mapPatientToDto(patient)
       }
     }
 
-    return {
+    return mapUserDetailsToDto({
       email: user.email,
       role: user.role,
       patientDetails
-    }
+    })
   }
 
-  // findByEmail
-  async findByEmail(email: string): Promise<IUser> {
+  // Para lógica interna (auth, etc.)
+  async findByEmailRaw(email: string): Promise<IUser> {
     return this.userModel.findOne({ email })
+  }
+
+  // Para exponer en la API
+  async findByEmailDto(email: string): Promise<UserDetailsResponseDto> {
+    const user = await this.userModel.findOne({ email }).select('-password').lean()
+    if (!user) return null
+
+    let patientDetails = undefined
+    if (user.role === USER_ROLES[2]) { // patient
+      const patient = await this.patientService.findByUserId(user._id.toString())
+      if (patient) {
+        patientDetails = mapPatientToDto(patient)
+      }
+    }
+
+    return mapUserDetailsToDto({
+      email: user.email,
+      role: user.role,
+      patientDetails
+    })
   }
 
   // findAll
   async findAll(): Promise<UserResumenResponseDto[]> {
-    return this.userModel.find().select('-_id -password').lean()
+    const users = await this.userModel.find().select('-_id -password').lean()
+    return users.map(mapUserResumenToDto)
   }
 
   // delete
-  async delete(id: string): Promise<User> {
+  async delete(id: string): Promise<void> {
     const user = await this.userModel.findByIdAndDelete(id)
 
-    // export const USER_ROLES = ['doctor', 'nurse', 'patient'] as const;
     switch (user.role) {
       // case USER_ROLES[0]: // *doctor
       //   await this.doctorService.deleteByUserId(user._id);
@@ -118,17 +118,15 @@ export class UserService {
         break
     }
 
-    const deletedUser = await this.userModel.findByIdAndDelete(id).select('-_id -password').lean()
-
-    return deletedUser
+    await this.userModel.findByIdAndDelete(id).select('-_id -password').lean()
   }
 
   // updatePassword
   async updatePassword(id: string, password: string): Promise<UserResumenResponseDto> {
     const hashedPassword = await hashPassword(password)
-    return this.userModel.findByIdAndUpdate(id, { password: hashedPassword }).select('-_id -password').lean()
+    const user = await this.userModel.findByIdAndUpdate(id, { password: hashedPassword }).select('-_id -password').lean()
+    return mapUserResumenToDto(user)
   }
 
-  // changeUserRole
   // countUsersByRole
 }

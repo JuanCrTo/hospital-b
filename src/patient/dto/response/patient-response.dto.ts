@@ -9,9 +9,6 @@ export class LocationHistoryItemDto {
 
   @ApiProperty({ example: -99.1332, required: false, nullable: true })
   longitude?: number
-
-  @ApiProperty({ example: '2025-06-19T12:00:00.000Z', type: String })
-  updatedAt: Date
 }
 
 export class PatientResponseDto {
