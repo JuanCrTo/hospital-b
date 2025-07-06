@@ -3,6 +3,8 @@ import { AppModule } from './app.module'
 import { ConfigService } from '@nestjs/config'
 import { ValidationPipe } from '@nestjs/common'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
+import { ResponseInterceptor } from './common/interceptors/response.interceptor'
+import { AllExceptionsFilter } from './common/exception/exception.filter'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true })
@@ -15,6 +17,8 @@ async function bootstrap() {
   })
 
   app.useGlobalPipes(new ValidationPipe())
+  app.useGlobalInterceptors(new ResponseInterceptor())
+  app.useGlobalFilters(new AllExceptionsFilter())
 
   const swaggerConfig = new DocumentBuilder()
     .setTitle('Hospital Yellow API')

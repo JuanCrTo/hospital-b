@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { IsDateString, IsNotEmpty, IsString } from 'class-validator'
-import { IsPastInDate } from 'src/decorators/isPastInDate.decorator'
+import { IsPastInDate } from 'src/decorators/validation/isPastInDate.decorator'
 
 export class CreatePatientDto {
   @ApiProperty({

@@ -1,11 +1,12 @@
-import { Body, Controller, Post } from '@nestjs/common'
-import { Public } from '../decorators/public.decorator'
+import { Body, Controller, HttpCode, Post } from '@nestjs/common'
+import { Public } from '../decorators/request/public.decorator'
 import { AuthService } from './auth.service'
-import { SignInDto } from './dto/request/signIn-auth-request.dto'
-import { ApiBadRequestResponse, ApiBody, ApiOkResponse, ApiOperation } from '@nestjs/swagger'
-import { ForgotPasswordResponseDto } from './dto/response/forgotPassword-auth-response.dto'
+import { SignInRequestDto } from './dto/request/signIn-auth-request.dto'
+import { ApiBody, ApiOperation } from '@nestjs/swagger'
 import { SignInResponseDto } from './dto/response/signIn-auth-response.dto'
-import { ForgotPasswordBodyDto } from './dto/request/forgotPassword-auth-request.dto'
+import { ForgotPasswordRequestDto } from './dto/request/forgotPassword-auth-request.dto'
+import { ApiStandardResponse } from 'src/decorators/swagger/response.decorator'
+import { ApiStandardError } from 'src/decorators/swagger/error.decorator'
 
 @Controller('auth')
 export class AuthController {
@@ -13,30 +14,27 @@ export class AuthController {
 
   @Public()
   @Post('signIn')
+  @HttpCode(201)
   @ApiOperation({ summary: 'Sign in a user' })
-  @ApiOkResponse({
-    description: 'User signed in successfully',
-    type: SignInResponseDto
-  })
-  @ApiBadRequestResponse({ description: 'Missing or invalid credentials' })
+  @ApiStandardResponse(SignInResponseDto, 201)
+  @ApiStandardError()
   @ApiBody({
     description: 'User credentials',
-    type: SignInDto
+    type: SignInRequestDto
   })
-  async signIn(@Body() credentials: SignInDto): Promise<SignInResponseDto> {
+  async signIn(@Body() credentials: SignInRequestDto): Promise<SignInResponseDto> {
     return this.authService.signIn(credentials.email, credentials.password)
   }
 
   @Public()
   @Post('forgotpassword')
+  @HttpCode(201)
   @ApiOperation({ summary: 'Request a password reset' })
-  @ApiOkResponse({
-    description: 'Password reset email sent',
-    type: ForgotPasswordResponseDto
-  })
+  @ApiStandardResponse(SignInRequestDto, 201)
+  @ApiStandardError()
   @ApiBody({
     description: 'User email',
-    type: ForgotPasswordBodyDto
+    type: ForgotPasswordRequestDto
   })
   async forgotPassword(@Body('email') email: string) {
     return this.authService.handleForgotPassword(email)

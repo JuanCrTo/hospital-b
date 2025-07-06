@@ -1,11 +1,14 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common'
+import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put, NotFoundException } from '@nestjs/common'
 import { UserService } from './user.service'
 import { CreateUserDto } from './dto/request/create-user-request.dto'
 import { User } from './model/user.schema'
-import { Public } from '../decorators/public.decorator'
-import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiNoContentResponse, ApiOkResponse, ApiOperation } from '@nestjs/swagger'
+import { Public } from '../decorators/request/public.decorator'
+import { ApiBearerAuth, ApiBody, ApiNoContentResponse, ApiOperation } from '@nestjs/swagger'
 import { changePasswordResponseDto } from './dto/response/changePassword-user-response.dto'
-import { ApiAuthResponses } from 'src/decorators/apiAuthResponse.decorator'
+import { ApiStandardResponse } from 'src/decorators/swagger/response.decorator'
+import { ApiStandardError } from 'src/decorators/swagger/error.decorator'
+import { UserDetailsResponseDto } from './dto/response/user-details-response.dto'
+import { UserResumenResponseDto } from './dto/response/user-resumen-response.dto'
 
 @Controller('user')
 export class UserController {
@@ -13,72 +16,67 @@ export class UserController {
 
   @Public()
   @Post()
+  @HttpCode(201)
   @ApiOperation({ summary: 'Create a new user' })
-  @ApiCreatedResponse({
-    description: 'User created successfully',
-    type: CreateUserDto
-  })
-  @ApiBadRequestResponse({ description: 'Missing or invalid credentials' })
+  @ApiStandardResponse(UserDetailsResponseDto, 201)
+  @ApiStandardError()
   @ApiBody({ description: 'User data', type: CreateUserDto })
-  async createUser(@Body() createUserDto: CreateUserDto): Promise<User> {
+  async createUser(@Body() createUserDto: CreateUserDto): Promise<UserDetailsResponseDto> {
     return this.userService.create(createUserDto)
   }
 
   @ApiBearerAuth('JWT-auth')
   @Get(':id')
+  @HttpCode(200)
   @ApiOperation({ summary: 'Get user by ID' })
-  @ApiOkResponse({
-    description: 'OK',
-    type: CreateUserDto
-  })
-  @ApiAuthResponses()
-  async findUserById(@Param('id') id: string): Promise<User> {
+  @ApiStandardResponse(UserDetailsResponseDto, 200)
+  @ApiStandardError()
+  async findUserById(@Param('id') id: string): Promise<UserDetailsResponseDto> {
     return this.userService.findById(id)
   }
 
   @ApiBearerAuth('JWT-auth')
   @Get('email/:email')
+  @HttpCode(200)
   @ApiOperation({ summary: 'Get user by email' })
-  @ApiOkResponse({
-    description: 'OK',
-    type: CreateUserDto
-  })
-  @ApiAuthResponses()
-  async findUserByEmail(@Param('email') email: string): Promise<User> {
-    return this.userService.findByEmail(email)
+  @ApiStandardResponse(UserDetailsResponseDto, 200)
+  @ApiStandardError()
+  async findUserByEmail(@Param('email') email: string): Promise<UserDetailsResponseDto> {
+    const user = await this.userService.findByEmailDto(email)
+    if (!user) {
+      throw new NotFoundException(`Usuario con email ${email} no encontrado`)
+    }
+    return user
   }
 
   @ApiBearerAuth('JWT-auth')
   @Get()
+  @HttpCode(200)
   @ApiOperation({ summary: 'Get all users' })
-  @ApiOkResponse({
-    description: 'OK',
-    type: [CreateUserDto]
-  })
-  @ApiAuthResponses()
-  async findAll(): Promise<User[]> {
+  @ApiStandardResponse(UserResumenResponseDto, 200)
+  @ApiStandardError()
+  async findAll(): Promise<UserResumenResponseDto[]> {
     return this.userService.findAll()
   }
 
   @ApiBearerAuth('JWT-auth')
-  @Delete(':id')
-  @ApiOperation({ summary: 'Delete user by ID' })
-  @ApiOkResponse({ description: 'User deleted successfully' })
-  @ApiAuthResponses()
-  async deleteById(@Param('id') id: string): Promise<User> {
-    return this.userService.delete(id)
+  @Put(':id/password')
+  @HttpCode(200)
+  @ApiOperation({ summary: 'Update user password' })
+  @ApiStandardResponse(UserResumenResponseDto, 200)
+  @ApiStandardError()
+  @ApiBody({ description: 'New password', type: changePasswordResponseDto })
+  async updatePassword(@Param('id') id: string, @Body('password') password: string): Promise<UserResumenResponseDto> {
+    return this.userService.updatePassword(id, password)
   }
 
   @ApiBearerAuth('JWT-auth')
-  @Put(':id/password')
-  @ApiOperation({ summary: 'Update user password' })
-  @ApiNoContentResponse({
-    description: 'Password updated successfully',
-    type: CreateUserDto
-  })
-  @ApiAuthResponses()
-  @ApiBody({ description: 'New password', type: changePasswordResponseDto })
-  async updatePassword(@Param('id') id: string, @Body('password') password: string) {
-    return this.userService.updatePassword(id, password)
+  @Delete(':id')
+  @HttpCode(204)
+  @ApiOperation({ summary: 'Delete user by ID' })
+  @ApiStandardResponse(null, 204)
+  @ApiStandardError()
+  async deleteById(@Param('id') id: string): Promise<void> {
+    return this.userService.delete(id)
   }
 }
