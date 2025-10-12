@@ -9,7 +9,6 @@ export class CreateUserDto {
     description: 'The name of the user',
     example: 'user@example.com'
   })
-  @IsString({ message: 'Email must be a string' })
   @IsNotEmpty({ message: 'Email is required' })
   @IsEmail({ allow_display_name: false, require_tld: true }, { message: 'Email must be a valid email address' })
   email: string
