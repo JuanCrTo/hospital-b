@@ -19,7 +19,8 @@ import { RabbitMQModule } from './rabbitmq/rabbitmq.module'
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal: true
+      isGlobal: true,
+      envFilePath: ['.env.local', '.env']
     }),
     MongooseModule.forRootAsync({ useClass: MongooseConfigService }),
     DoctorModule,

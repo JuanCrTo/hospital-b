@@ -5,12 +5,18 @@ import { ForgotPasswordEmailData, WelcomeEmailData } from './interfaces/email.in
 
 @Injectable()
 export class EmailConsumer implements OnModuleInit {
-  private mg = mailgun({
-    apiKey: process.env.MAILGUN_API_KEY,
-    domain: process.env.MAILGUN_DOMAIN,
-  });
+  private mg: any = null;
 
-  constructor(private readonly rabbitMQService: RabbitMQService) {}
+  constructor(private readonly rabbitMQService: RabbitMQService) {
+    const apiKey = process.env.MAILGUN_API_KEY;
+    const domain = process.env.MAILGUN_DOMAIN;
+
+    if (apiKey && domain) {
+      this.mg = mailgun({ apiKey, domain });
+    } else {
+      console.warn('Mailgun is not configured; email delivery is disabled.');
+    }
+  }
 
   async onModuleInit() {
     await this.startConsumingForgotPassword();
@@ -24,6 +30,10 @@ export class EmailConsumer implements OnModuleInit {
       if (!msg) return;
 
       try {
+        if (!this.mg) {
+          throw new Error('Mailgun is not configured');
+        }
+
         const emailData: ForgotPasswordEmailData = JSON.parse(msg.content.toString());
         
         console.log('Processing forgot password email:', emailData);
@@ -61,6 +71,10 @@ export class EmailConsumer implements OnModuleInit {
       if (!msg) return;
 
       try {
+        if (!this.mg) {
+          throw new Error('Mailgun is not configured');
+        }
+
         const emailData: WelcomeEmailData = JSON.parse(msg.content.toString());
         
         console.log('Processing welcome email:', emailData);

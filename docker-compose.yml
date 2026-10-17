@@ -1,0 +1,68 @@
+services:
+  api:
+    build:
+      context: .
+      target: production
+    container_name: hospital-b-api
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      MONGO_URI: mongodb://mongodb:27017/hospital
+      RABBITMQ_URL: amqp://hospital:hospital@rabbitmq:5672
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-local-development-access-secret-change-me}
+      SECRET_KEY_RESET_PASSWORD: ${SECRET_KEY_RESET_PASSWORD:-local-development-reset-secret-change-me}
+      LOCAL_URL: ${LOCAL_URL:-http://localhost:3000}
+      LOCAL_URL_2: ${LOCAL_URL_2:-http://localhost:5173}
+    ports:
+      - '4000:4000'
+    healthcheck:
+      test: ['CMD', 'node', '-e', "fetch('http://127.0.0.1:4000').then(response => process.exit(response.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+  mongodb:
+    image: mongo:7
+    container_name: hospital-b-mongodb
+    restart: unless-stopped
+    volumes:
+      - mongodb_data:/data/db
+    healthcheck:
+      test: ['CMD', 'mongosh', '--quiet', '--eval', 'db.runCommand({ ping: 1 }).ok']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: hospital-b-rabbitmq
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: hospital
+      RABBITMQ_DEFAULT_PASS: hospital
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ['CMD', 'rabbitmq-diagnostics', '-q', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+volumes:
+  mongodb_data:
+  rabbitmq_data:
